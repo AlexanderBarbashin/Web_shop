@@ -1,2 +1,6 @@
 
 .DS_Store
+
+# Jetbrains Intellij IDEA
+.idea/
+
