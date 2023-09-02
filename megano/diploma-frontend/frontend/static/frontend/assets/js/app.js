@@ -55,7 +55,7 @@ createApp({
 			location.assign(`/catalog/?filter=${this.searchText}`)
 		},
 		getCategories() {
-			this.getData('/api/categories')
+			this.getData('/api/categories/')
 				.then((data) => (this.categories = data))
 				.catch(() => {
 					console.warn('Ошибка получения категорий')

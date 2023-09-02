@@ -52,7 +52,7 @@ var mix = {
             if (max !== 50000) {
                 this.filter.maxPrice = max
             }
-            this.getData("/api/catalog", {
+            this.getData("/api/catalog/", {
                 filter: {
                     ...this.filter,
                     minPrice: min,
@@ -66,7 +66,7 @@ var mix = {
                 limit: PAGE_LIMIT
             })
                 .then(data => {
-                    this.catalogCards = data.items
+                    this.catalogCards = data.results
                     this.currentPage = data.currentPage
                     this.lastPage = data.lastPage
 
@@ -96,7 +96,7 @@ var mix = {
             lastPage: 1,
             selectedSort: null,
             filter: {
-                name: '',
+                title: '',
                 minPrice: 0,
                 maxPrice: 50000,
                 freeDelivery: false,
