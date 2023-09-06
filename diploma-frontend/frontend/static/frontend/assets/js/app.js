@@ -55,7 +55,7 @@ createApp({
 			location.assign(`/catalog/?filter=${this.searchText}`)
 		},
 		getCategories() {
-			this.getData('/api/categories')
+			this.getData('/api/categories/')
 				.then((data) => (this.categories = data))
 				.catch(() => {
 					console.warn('Ошибка получения категорий')
@@ -120,7 +120,7 @@ createApp({
 				})
 		},
 		signOut() {
-			this.postData('/api/sign-out').finally(() => {
+			this.postData('/api/sign-out/').finally(() => {
 				location.assign(`/`)
 			})
 		},

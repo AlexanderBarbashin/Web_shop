@@ -54,7 +54,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     fullName = models.CharField(max_length=150, verbose_name='Полное имя')
-    email = models.EmailField(null=True, unique=True)
+    email = models.EmailField(null=True, unique=True, verbose_name='Электронный адрес')
     phone = models.PositiveIntegerField(blank=True, null=True, unique=True, verbose_name='Номер телефона')
     balance = models.DecimalField(decimal_places=2, max_digits=10, default=0, verbose_name='Баланс')
     avatar = models.ForeignKey(Avatar, null=True, on_delete=models.SET_NULL, related_name='profile',
