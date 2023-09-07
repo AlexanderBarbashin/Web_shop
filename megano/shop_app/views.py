@@ -10,10 +10,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+
 from shop_app.utils import ProductListFilter, ProductListViewPagination, SaleListViewPagination
 from shop_app.models import Category, Product, Tag
 from shop_app.serializers import CategorySerializer, TagSerializer, ReviewSerializer, \
-    ProductDetailsSerializer, ProductListSerializer, ProductSaleSerializer, BannerProductListSerializer
+    ProductDetailsSerializer, ProductListSerializer, ProductSaleSerializer, BannerProductListSerializer, \
+    ProductAddToBasketSerializer
 
 
 class CategoryView(APIView):
@@ -95,6 +97,7 @@ class ProductPopularListView(APIView):
 
         popular_poducts = Product.objects.filter(count__gt=0).select_related('category').prefetch_related('images').\
                               prefetch_related('tags').prefetch_related('reviews').order_by('-rating')[:5]
+
         serializer = ProductListSerializer(popular_poducts, many=True)
         return Response(serializer.data)
 
@@ -166,6 +169,25 @@ class ProductReviewCreate(APIView):
         request.data['product'] = product_pk
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BasketView(APIView):
+    def get(self, request):
+        products = request.user.profile.basket.products.all()
+        serializer = ProductListSerializer(products, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        print(request.data)
+        serializer = ProductAddToBasketSerializer(data=request.data)
+        if serializer.is_valid():
+            print('SERIALIZER', serializer)
+            print('VALIDATED DATA', serializer.validated_data)
+            print(serializer.data['id'])
+            print(serializer.validated_data['count'])
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

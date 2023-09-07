@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Avg
+from users_app.models import Profile
 
 
 def image_directory_path(instance: 'Image', filename: str) -> str:
@@ -153,3 +154,22 @@ class Review(models.Model):
         product.rating = rating['rate__avg']
         product.save(update_fields=['rating'])
 
+
+class Basket(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.PROTECT, related_name='basket', verbose_name='Профиль')
+    products = models.ManyToManyField(Product, null=True, related_name='basket', verbose_name='Продукты')
+
+    def __str__(self):
+        return 'Корзина пользователя {username}'.format(
+            username=self.profile.user.username
+        )
+
+    class Meta:
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзины'
+
+class ProductsInBasketCount(models.Model):
+    basket = models.ForeignKey(Basket, on_delete=models.CASCADE, related_name='products_in_basket_count',
+                               verbose_name='Корзина')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='products_in_basket_count',
+                                verbose_name='Товар')

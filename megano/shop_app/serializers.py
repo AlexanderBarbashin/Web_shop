@@ -117,3 +117,11 @@ class ProductDetailsSerializer(serializers.ModelSerializer):
             'id', 'category', 'price', 'count', 'date', 'title', 'description', 'fullDescription', 'freeDelivery',
             'images', 'tags', 'reviews', 'specifications', 'rating'
         ]
+
+
+class ProductAddToBasketSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+
+    class Meta:
+        model = Product
+        fields = ['id', 'count']

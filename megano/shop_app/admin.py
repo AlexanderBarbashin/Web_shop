@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from shop_app.models import Category, Image, Tag, Review, Specification, Product, Sale
+from shop_app.models import Category, Image, Tag, Review, Specification, Product, Sale, Basket
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -54,6 +54,10 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [ImageInline]
 
 
+class BasketAdmin(admin.ModelAdmin):
+    list_display = 'pk', 'profile'
+
+
 admin.site.register(Category, CategoryAdmin)
 
 admin.site.register(Image, ImageAdmin)
@@ -67,3 +71,5 @@ admin.site.register(Specification, SpecificationAdmin)
 admin.site.register(Sale, SaleAdmin)
 
 admin.site.register(Product, ProductAdmin)
+
+admin.site.register(Basket, BasketAdmin)
