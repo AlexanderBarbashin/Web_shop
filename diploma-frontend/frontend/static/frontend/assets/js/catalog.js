@@ -66,7 +66,7 @@ var mix = {
                 limit: PAGE_LIMIT
             })
                 .then(data => {
-                    this.catalogCards = data.results
+                    this.catalogCards = data.items
                     this.currentPage = data.currentPage
                     this.lastPage = data.lastPage
 

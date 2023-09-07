@@ -4,7 +4,7 @@ var mix = {
             this.getData("/api/sale/", {
                 currentPage: page,
             }).then(data => {
-                this.salesCards = data.results
+                this.salesCards = data.items
                 this.currentPage = data.currentPage
                 this.lastPage = data.lastPage
             })

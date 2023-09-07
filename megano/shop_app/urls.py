@@ -9,7 +9,7 @@ from shop_app.views import (
     ProductPopularListView,
     ProductLimitedListView,
     ProductSaleListView,
-    BannerListView
+    BannerListView, BasketView
 )
 
 urlpatterns = [
@@ -19,6 +19,7 @@ urlpatterns = [
     path('products/limited/', ProductLimitedListView.as_view(), name='products_limited'),
     path('sale/', ProductSaleListView.as_view(), name='products_sales'),
     path('banners/', BannerListView.as_view(), name='banners'),
+    path('basket/', BasketView.as_view(), name='basket'),
     path('product/<int:pk>', ProductDetailView.as_view(), name='product'),
     path('product/<int:pk>/review/', ProductReviewCreate.as_view(), name='review_create'),
     path('tags/', TagsView.as_view(), name='tags'),

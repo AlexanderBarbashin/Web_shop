@@ -13,7 +13,8 @@ from rest_framework.views import APIView
 from shop_app.filters import ProductListFilter
 from shop_app.models import Category, Product, Tag
 from shop_app.serializers import CategorySerializer, TagSerializer, ReviewSerializer, \
-    ProductDetailsSerializer, ProductListSerializer, ProductSaleSerializer, BannerProductListSerializer
+    ProductDetailsSerializer, ProductListSerializer, ProductSaleSerializer, BannerProductListSerializer, \
+    ProductAddToBasketSerializer
 
 
 class CategoryView(APIView):
@@ -164,6 +165,25 @@ class ProductReviewCreate(APIView):
         request.data['product'] = product_pk
         serializer = ReviewSerializer(data=request.data)
         if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BasketView(APIView):
+    def get(self, request):
+        products = request.user.profile.basket.products.all()
+        serializer = ProductListSerializer(products, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        print(request.data)
+        serializer = ProductAddToBasketSerializer(data=request.data)
+        if serializer.is_valid():
+            print('SERIALIZER', serializer)
+            print('VALIDATED DATA', serializer.validated_data)
+            print(serializer.data['id'])
+            print(serializer.validated_data['count'])
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
