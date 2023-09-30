@@ -18,32 +18,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
-from rest_framework import permissions, routers
 
-from users_app.views import ProfileView
-
-schema_view = get_schema_view(
-   openapi.Info(
-      title="Megano",
-      default_version='v1',
-      description="The best API ever)))",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="electronic_books@lib.local"),
-      license=openapi.License(name="Some License"),
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny],
-)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('diploma-frontend.frontend.urls')),
-    path('api/', include('api.urls')),
+    path('', include('frontend.urls')),
     path('api/', include('users_app.urls')),
     path('api/', include('shop_app.urls')),
-    # path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
 if settings.DEBUG:

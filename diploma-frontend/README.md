@@ -7,7 +7,7 @@
 ## Контракт для API
 Названия роутов и ожидаемую структуру ответа от API endpoints можно найти в `diploma-frontend/swagger/swagger.yaml`. 
 Для более удобного просмотра swagger-описания рекомендуется использовать возможности gitlab:
-![image](./gitlab-swagger.png)
+![image](gitlab-swagger.png)
 
 ## Подключение пакета
 1. Собрать пакет: в директории diploma-frontend выполнить команду python setup.py sdist
@@ -27,7 +27,7 @@ urlpatterns = [
 ]
 ```
 Если запустить сервер разработки: `python manage.py runserver`, то по адресу `127.0.0.1:8000` должна открыться стартовая страница интернет-магазина:
-![image](./root-page.png)
+![image](root-page.png)
 
 # Детали подключаемого приложения `frontend` (Для проверяющих преподавателей)
 Приложение служит только для отрисовки шаблонов из `templates/frontend`, поэтому в `urls.py` напрямую 
