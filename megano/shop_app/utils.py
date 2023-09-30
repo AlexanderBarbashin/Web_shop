@@ -1,10 +1,13 @@
+import uuid
+
 from django.db.models import Q, QuerySet
 from django_filters.rest_framework import FilterSet
 from django_filters import NumberFilter, BooleanFilter, CharFilter
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.request import Request
 from rest_framework.response import Response
 
-from shop_app.models import Product, Category
+from shop_app.models import Product, Category, Basket
 
 
 class ProductListFilter(FilterSet):
@@ -78,3 +81,17 @@ class SaleListViewPagination(ProductListViewPagination):
     """Пагинатор списка товаров со скидками. Родитель: ProductListViewPagination."""
 
     page_size = 3
+
+
+def get_basket(request: Request) -> Basket:
+    """Метод для получения корзины с товарами."""
+
+    if request.user.is_authenticated:
+        basket, _ = Basket.objects.get_or_create(user=request.user)
+    else:
+        try:
+            basket = Basket.objects.get(session_id=request.session['anonym'])
+        except:
+            request.session['anonym'] = str(uuid.uuid4())
+            basket = Basket.objects.create(session_id=request.session['anonym'])
+    return basket
