@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-139atsa153inlaf5)ryh0vj$af-=q-mbd-%pfvhu&1yhg=s%#a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+    'localhost'
+]
 
 
 # Application definition
@@ -37,13 +40,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admindocs',
+
     'frontend',
     'rest_framework',
     'django_filters',
+    'drf_spectacular',
+
     'api',
     'users_app',
+    'catalog_app',
     'shop_app',
-    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.admindocs.middleware.XViewMiddleware',
 ]
 
 ROOT_URLCONF = 'megano.urls'
@@ -137,5 +145,19 @@ REST_FRAMEWORK = {
     'DATE_FORMAT': '%m-%d',
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
-    ]
+    ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
+
+SPECTACULAR_SETTINGS ={
+    'TITLE': 'Python Django final project',
+    'DESCRIPTION': 'Web shop "Megano"',
+    'VERSION': '1.0.0',
+    'SERF_INCLUDE_SCHEMA': False
+}
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+APPEND_SLASH=False

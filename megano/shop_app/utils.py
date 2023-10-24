@@ -1,90 +1,16 @@
 import uuid
 
-from django.db.models import Q, QuerySet
-from django_filters.rest_framework import FilterSet
-from django_filters import NumberFilter, BooleanFilter, CharFilter
-from rest_framework.pagination import PageNumberPagination
+from django.db import transaction
+from django.db.models import F, Sum
 from rest_framework.request import Request
-from rest_framework.response import Response
 
-from shop_app.models import Product, Category, Basket
-
-
-class ProductListFilter(FilterSet):
-    """Фильтр списка продуктов. Родитель: FilterSet."""
-
-    minPrice = NumberFilter(field_name='price', lookup_expr='gte')
-    maxPrice = NumberFilter(field_name='price', lookup_expr='lte')
-    freeDelivery = BooleanFilter(field_name='freeDelivery', method='filter_free_delivery')
-    available = BooleanFilter(field_name='count', method='filter_available')
-    tags = CharFilter(field_name='tags', method='filter_tags')
-    category = NumberFilter(field_name='category', method='filter_category')
-
-    def filter_free_delivery(self, queryset: QuerySet, name: str, value: bool) -> QuerySet:
-        """Метод для фильтрации продуктов с бесплатной доставкой."""
-
-        if value:
-            queryset = queryset.filter(freeDelivery=True)
-        return queryset
-
-    def filter_available(self, queryset: QuerySet, name: str, value: bool) -> QuerySet:
-        """Метод для фильтрации продуктов, доступных для покупки."""
-
-        if value:
-            queryset = queryset.filter(count__gt=0)
-        return queryset
-
-    def filter_tags(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
-        """Метод для фильтрации продуктов по тэгам."""
-
-        if value:
-            tags_list = [int(tag) for tag in value if tag.isdigit()]
-            for tag in tags_list:
-                queryset = queryset.filter(tags=tag)
-        return queryset
-
-    def filter_category(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
-        """Метод для фильтрации продуктов по категориям."""
-
-        category = Category.objects.get(pk=value)
-        if not category.main_category:
-            categories_list = Category.objects.filter(Q(main_category=category) | Q(pk=value))
-        else:
-            categories_list = Category.objects.filter(pk=value)
-        queryset = queryset.filter(category__in=categories_list)
-        return queryset
-
-    class Meta:
-        model = Product
-        fields = ['minPrice', 'maxPrice', 'freeDelivery', 'available', 'tags', 'category']
-
-
-class ProductListViewPagination(PageNumberPagination):
-    """Пагинатор списка товаров. Родитель: PageNumberPagination."""
-    page_size = 4
-    page_query_param = 'currentPage'
-
-    def get_paginated_response(self, data: dict) -> Response:
-        """Метод для получения списка товаров, разделенного постранично."""
-
-        last_page_number = self.page.paginator.num_pages
-        return Response(
-            {
-                'items': data,
-                'currentPage': self.page.number,
-                'lastPage': last_page_number
-            }
-        )
-
-
-class SaleListViewPagination(ProductListViewPagination):
-    """Пагинатор списка товаров со скидками. Родитель: ProductListViewPagination."""
-
-    page_size = 3
+from catalog_app.models import Product
+from shop_app.models import Basket, ProductsInBasketCount, Order, DeliveryPrice, ExpressDeliveryPrice
+from shop_app.serializers import ProductUpdateBasketSerializer, ProductInBasketListSerializer, OrderUpdateSerializer
 
 
 def get_basket(request: Request) -> Basket:
-    """Метод для получения корзины с товарами."""
+    """Функция для получения корзины с товарами."""
 
     if request.user.is_authenticated:
         basket, _ = Basket.objects.get_or_create(user=request.user)
@@ -95,3 +21,77 @@ def get_basket(request: Request) -> Basket:
             request.session['anonym'] = str(uuid.uuid4())
             basket = Basket.objects.create(session_id=request.session['anonym'])
     return basket
+
+def product_add_to_bakset(request: Request, serializer: ProductUpdateBasketSerializer) -> ProductInBasketListSerializer:
+    """Функция для добавления товара в корзину."""
+
+    basket = get_basket(request)
+    product_id = serializer.validated_data['id']
+    product = Product.objects.get(id=product_id)
+    count = serializer.validated_data['count']
+    product_in_basket, _ = ProductsInBasketCount.objects.get_or_create(basket=basket, product=product)
+    with transaction.atomic():
+        product.count -= count
+        product.save(update_fields=['count'])
+        product_in_basket.count_in_basket += count
+        product_in_basket.save(update_fields=['count_in_basket'])
+        products = Product.objects.prefetch_related('basket').prefetch_related('products_in_basket_count'). \
+            filter(
+            basket=basket,
+            products_in_basket_count__count_in_basket__gt=0
+        ).select_related('category').prefetch_related('images').prefetch_related('tags').prefetch_related(
+            'reviews')
+        products_serializer = ProductInBasketListSerializer(products, context={'basket': basket.id}, many=True)
+    return products_serializer
+
+def product_delete_from_bakset(request: Request, serializer: ProductUpdateBasketSerializer) -> \
+        ProductInBasketListSerializer:
+    """Функция для удаления товара из корзины."""
+
+    basket = get_basket(request)
+    product_id = serializer.validated_data['id']
+    product = Product.objects.get(id=product_id)
+    count = serializer.validated_data['count']
+    product_in_basket = ProductsInBasketCount.objects.get(basket=basket, product=product)
+    with transaction.atomic():
+        product.count += count
+        product.save(update_fields=['count'])
+        product_in_basket.count_in_basket -= count
+        product_in_basket.save(update_fields=['count_in_basket'])
+        products = Product.objects.prefetch_related('basket').prefetch_related('products_in_basket_count'). \
+            filter(
+            basket=basket,
+            products_in_basket_count__count_in_basket__gt=0
+        ).select_related('category').prefetch_related('images').prefetch_related('tags').prefetch_related(
+            'reviews')
+        products_serializer = ProductInBasketListSerializer(products, context={'basket': basket.id}, many=True)
+    return products_serializer
+
+def order_users_params_get(request: Request, order: Order) -> None:
+    """Функция для привязки профиля пользователя к заказу и внесения в заказ параметров пользователя."""
+
+    if request.user.is_authenticated:
+        profile = request.user.profile
+        order.profile = profile
+        order.fullName = profile.fullName if profile.fullName else None
+        order.phone = profile.phone if profile.phone else None
+        order.email = profile.email if profile.email else None
+        order.save(update_fields=['profile'])
+
+def confirm_order(serializer: OrderUpdateSerializer, order: Order) -> Order:
+    """Функция для подтверждения заказа."""
+
+    serializer.save()
+    order.status = 'confirmed'
+    total_cost = order.products.annotate(
+        product_cost=F('price') * F('products_in_order_count__count_in_order')).aggregate(
+        total_cost=Sum('product_cost'))
+    delivery_price = DeliveryPrice.objects.first()
+    if total_cost['total_cost'] < delivery_price.free_delivery_point:
+        total_cost['total_cost'] += delivery_price.price
+    if order.deliveryType == 'express':
+        express_delivery_price = ExpressDeliveryPrice.objects.first().price
+        total_cost['total_cost'] += express_delivery_price
+    order.totalCost = total_cost['total_cost']
+    order.save(update_fields=['status', 'totalCost'])
+    return order

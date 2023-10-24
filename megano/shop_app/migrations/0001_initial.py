@@ -2,7 +2,8 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import shop_app.models
+
+import catalog_app.models
 
 
 class Migration(migrations.Migration):
@@ -96,7 +97,7 @@ class Migration(migrations.Migration):
             name='Image',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('src', models.ImageField(upload_to=shop_app.models.image_directory_path, verbose_name='Ссылка')),
+                ('src', models.ImageField(upload_to=catalog_app.models.image_directory_path, verbose_name='Ссылка')),
                 ('alt', models.CharField(max_length=100, verbose_name='Описание')),
                 ('product', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='images', to='shop_app.product', verbose_name='Продукт')),
             ],

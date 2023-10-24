@@ -3,20 +3,31 @@ import json
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
 
-from rest_framework import status, permissions
+from rest_framework import status, permissions, serializers
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParameter, inline_serializer
 
 from users_app.models import Profile, Avatar
 from users_app.serializers import ProfileSerializer, UserPasswordSerializer
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='username', required=True, type=str, description='Имя пользователя'),
+        OpenApiParameter(name='password', required=True, type=str, description='Пароль')
+    ],
+    responses={
+        200: OpenApiResponse(description='Успешная аутентификация'),
+        500: OpenApiResponse(description='Неверное имя пользователя или пароль')
+    }
+)
 class SignInView(APIView):
-    """Представление для авторизации существующего пользователя. Родитель: APIView."""
+    """Представление для аутентификации существующего пользователя. Родитель: APIView."""
 
     def post(self, request: Request) -> Response:
-        """Метод для отправки заполненной формы авторизации существующего пользователя на сервер."""
+        """Метод для отправки заполненной формы аутентификации существующего пользователя на сервер."""
 
         user_data = json.loads(request.body)
         username = user_data['username']
@@ -30,6 +41,17 @@ class SignInView(APIView):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='name', required=True, type=str, description='Имя'),
+        OpenApiParameter(name='username', required=True, type=str, description='Имя пользователя'),
+        OpenApiParameter(name='password', required=True, type=str, description='Пароль')
+    ],
+    responses={
+        200: OpenApiResponse(description='Регистрация прошла успешно'),
+        500: OpenApiResponse(description='Регистрация не выполнена')
+    }
+)
 class SignUpView(APIView):
     """Представление для регистрации нового пользователя. Родитель: APIView."""
 
@@ -57,11 +79,16 @@ class SignUpView(APIView):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@extend_schema(
+    responses={
+        200: OpenApiResponse(description='Выполнен выход из учетной записи'),
+    }
+)
 class SignOutView(APIView):
-    """Представление для выхода из учетной записи авторизованного пользователя. Родитель: APIView."""
+    """Представление для выхода из учетной записи аутентифицированного пользователя. Родитель: APIView."""
 
     def post(self, request: Request) -> Response:
-        """Метод для выхода из учетной записи авторизованного пользователя."""
+        """Метод для выхода из учетной записи аутентифицированного пользователя."""
 
         logout(request)
         return Response(status=status.HTTP_200_OK)
@@ -72,6 +99,12 @@ class ProfileView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        responses={
+            200: ProfileSerializer,
+            403: OpenApiResponse(description='Требуется аутентификация'),
+        }
+    )
     def get(self, request: Request) -> Response:
         """Метод для просмотра профиля пользователя."""
 
@@ -79,6 +112,14 @@ class ProfileView(APIView):
         serializer = ProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        request=ProfileSerializer,
+        responses={
+            200: ProfileSerializer,
+            400: OpenApiResponse(description='Редактирование профиля не выполнено'),
+            403: OpenApiResponse(description='Требуется аутентификация'),
+        }
+    )
     def post(self, request: Request) -> Response:
         """Метод для редактирования профиля пользователя."""
 
@@ -95,6 +136,20 @@ class UserPasswordUpdateView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        request=inline_serializer(
+            name='UserPasswordSerializer',
+            fields={
+                'currentPassword': serializers.CharField(),
+                'newPassword': serializers.CharField()
+            }
+        ),
+        responses={
+            200: OpenApiResponse(description='Пароль успешно обновлен'),
+            400: OpenApiResponse(description='Обновление профиля не выполнено'),
+            403: OpenApiResponse(description='Требуется аутентификация'),
+        }
+    )
     def post(self, request: Request) -> Response:
         """Метод для обновления пароля пользователя."""
 
@@ -111,6 +166,13 @@ class UserAvatarUpdateView(APIView):
 
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(description='Аватар успешно обновлен'),
+            400: OpenApiResponse(description='Обновление аватара не выполнено'),
+            403: OpenApiResponse(description='Требуется аутентификация'),
+        }
+    )
     def post(self, request: Request) -> Response:
         """Метод для обновления аватара пользователя."""
 
