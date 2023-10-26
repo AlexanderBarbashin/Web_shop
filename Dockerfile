@@ -14,3 +14,5 @@ COPY diploma-frontend/dist/diploma-frontend-0.6.tar.gz diploma-frontend-0.6.tar.
 RUN pip install diploma-frontend-0.6.tar.gz
 
 COPY megano .
+
+CMD ['gunicorn', 'megano.wsgi:application', '--build', '0.0.0.0:8000']
