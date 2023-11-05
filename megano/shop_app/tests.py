@@ -1,14 +1,13 @@
 import json
 import os
-from datetime import datetime
 
 from django.contrib.auth.models import User
-from django.db.models import Q
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from catalog_app.models import Product, Category, Image
 from megano import settings
+from megano.celery import app
 from shop_app.models import Basket, ProductsInBasketCount, Order, DeliveryPrice
 from users_app.models import Profile
 
@@ -228,6 +227,7 @@ class OrderListViewTestCase(APITestCase):
 
 
 class OrderDetailViewTestCase(APITestCase):
+    """Тест представления детальной страницы заказа. Родитель: APITestCase."""
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -342,3 +342,65 @@ class OrderDetailViewTestCase(APITestCase):
             }
         )
         self.assertEqual(response.status_code, 200)
+
+
+class PaymentViewTestCase(APITestCase):
+    """Тест представления оплаты заказа. Родитель: APITestCase."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Метод для предварительной подготовки БД к проведению теста."""
+
+        cls.order = Order.objects.create()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """Метод для очистки БД после проведения теста."""
+
+        cls.order.delete()
+
+    def setUp(self) -> None:
+        """Метод для предварительной подготовки celery к проведению теста."""
+
+        app.conf.task_always_eager = True
+
+    def tearDown(self) -> None:
+        """Метод для возвращения celery к прежним настройкам после проведения теста."""
+
+        app.conf.task_always_eager = False
+
+    def test_payment(self) -> None:
+        """Метод для тестирования оплаты заказа."""
+
+        response = self.client.post(
+            reverse(
+                'payment',
+                kwargs={'pk': self.order.pk}
+            ),
+            {
+                'number': 2222222222222222,
+                'name': 'Test name',
+                'month': 12,
+                'year': 25,
+                'code': 123
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_payment_not_complete(self) -> None:
+        """Метод для тестирования оплаты заказа с нечетным номером карты."""
+
+        response = self.client.post(
+            reverse(
+                'payment',
+                kwargs={'pk': self.order.pk}
+            ),
+            {
+                'number': 1111111111111111,
+                'name': 'Test name',
+                'month': 12,
+                'year': 25,
+                'code': 123
+            }
+        )
+        self.assertEqual(response.status_code, 400)
