@@ -188,12 +188,8 @@ class PaymentView(APIView):
         serializer = PaymentSerializer(data=request.data)
         if serializer.is_valid():
             order_pk = kwargs['pk']
-            order = Order.objects.get(pk=order_pk)
-            # order.status = 'paid'
-            # order.save(update_fields=['status'])
-            order_id = order.id
             card_num = serializer.validated_data['number']
-            updated_order = payment.delay(order_id, card_num)
-            if updated_order:
+            updated_orders_status = payment.delay(order_pk, card_num)
+            if updated_orders_status.get() == 'paid':
                 return Response(status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
