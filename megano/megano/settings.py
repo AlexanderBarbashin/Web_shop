@@ -14,6 +14,10 @@ from pathlib import Path
 
 from os import getenv
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASE_DIR = BASE_DIR / 'database'
@@ -30,9 +34,13 @@ SECRET_KEY = getenv(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = getenv('DJANGO_DEBUG', '0') == '1'
+print('Debug=', DEBUG)
+
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
     '0.0.0.0',
     'localhost'
 ] + getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
@@ -136,7 +144,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'static/'
 
 MEDIA_URL = '/media/'
 
@@ -164,7 +173,44 @@ SPECTACULAR_SETTINGS ={
     'SERF_INCLUDE_SCHEMA': False
 }
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
 
 APPEND_SLASH=False
+
+LOGFILE_NAME = BASE_DIR / 'log.txt'
+LOGFILE_SIZE = 1 * 1024 * 1024
+LOGFILE_COUNT = 5
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s level: %(levelname)s, module: %(name)s: %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'logfile': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGFILE_NAME,
+            'maxBytes': LOGFILE_SIZE,
+            'backupCount': LOGFILE_COUNT,
+            'formatter': 'verbose'
+        }
+    },
+    'root': {
+        'handlers': [
+            'console',
+            'logfile'
+        ],
+        'level': 'INFO'
+    }
+}
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost']
