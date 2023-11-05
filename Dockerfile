@@ -15,4 +15,6 @@ RUN pip install diploma-frontend-0.6.tar.gz
 
 COPY megano .
 
-CMD ['gunicorn', 'megano.wsgi:application', '--build', '0.0.0.0:8000']
+RUN python manage.py migrate
+RUN python manage.py collectstatic --no-input
+

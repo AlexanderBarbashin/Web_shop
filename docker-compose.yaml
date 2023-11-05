@@ -15,4 +15,20 @@ services:
     env_file:
       - .env
     volumes:
-      - ./megano/database:/lsdjango-app/database
+      - static_volume:/django-app/static
+      - media_volume:/django-app/media
+      - ./megano/database:/django-app/database
+  nginx:
+    build: ./nginx
+    ports:
+      - '80:80'
+    volumes:
+      - static_volume:/django-app/static
+      - media_volume:/django-app/media
+    depends_on:
+      - django-app
+
+volumes:
+  static_volume:
+  media_volume:
+
