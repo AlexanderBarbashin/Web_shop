@@ -16,6 +16,8 @@ from os import getenv
 
 from dotenv import load_dotenv
 
+import logging.config
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -62,7 +64,6 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
 
-    'api',
     'users_app',
     'catalog_app',
     'shop_app',
@@ -173,8 +174,8 @@ SPECTACULAR_SETTINGS ={
     'SERF_INCLUDE_SCHEMA': False
 }
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 
 APPEND_SLASH=False
@@ -183,34 +184,60 @@ LOGFILE_NAME = BASE_DIR / 'log.txt'
 LOGFILE_SIZE = 1 * 1024 * 1024
 LOGFILE_COUNT = 5
 
-LOGGING = {
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '%(asctime)s level: %(levelname)s, module: %(name)s: %(message)s'
+#         }
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose'
+#         },
+#         'logfile': {
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': LOGFILE_NAME,
+#             'maxBytes': LOGFILE_SIZE,
+#             'backupCount': LOGFILE_COUNT,
+#             'formatter': 'verbose'
+#         }
+#     },
+#     'root': {
+#         'handlers': [
+#             'console',
+#             'logfile'
+#         ],
+#         'level': 'INFO'
+#     }
+# }
+
+LOGLEVEL = getenv('DJANGO_LOGLEVEL', 'info').upper()
+
+logging.config.dictConfig({
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'verbose': {
+        'console': {
             'format': '%(asctime)s level: %(levelname)s, module: %(name)s: %(message)s'
         }
     },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        },
-        'logfile': {
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGFILE_NAME,
-            'maxBytes': LOGFILE_SIZE,
-            'backupCount': LOGFILE_COUNT,
-            'formatter': 'verbose'
+            'formatter': 'console'
         }
     },
-    'root': {
-        'handlers': [
-            'console',
-            'logfile'
-        ],
-        'level': 'INFO'
+    'loggers': {
+        '': {
+            'level': LOGLEVEL,
+            'handlers': [
+                'console'
+            ]
+        }
     }
-}
+})
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost']
