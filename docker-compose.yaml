@@ -12,6 +12,11 @@ services:
     ports:
       - '8000:8000'
     restart: always
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '5'
+        max-size: '1m'
     env_file:
       - .env
     volumes:
@@ -27,6 +32,23 @@ services:
       - media_volume:/django-app/media
     depends_on:
       - django-app
+
+  redis:
+    image: redis:7.0.5-alpine
+    hostname: redis
+
+  worker:
+    build:
+      dockerfile: ./Dockerfile
+    hostname: worker
+    entrypoint: celery
+    command: -A celery --app=megano worker --loglevel=warning
+    volumes:
+      - ./megano/database:/django-app/database
+    links:
+      - redis
+    depends_on:
+      - redis
 
 volumes:
   static_volume:
