@@ -24,11 +24,10 @@ class SubcategorySerializer(serializers.Serializer):
     def to_representation(self, value: Category) -> dict:
         """Метод для рекурсивной сериализации подкатегорий."""
 
-        serialaizer = self.parent.parent.__class__(value, context=self.context)
         # Фильтрация подкатегорий, содержащих продукты или подкатегории
         if value.products.all().exists() or value.subcategories.all().exists():
+            serialaizer = self.parent.parent.__class__(value, context=self.context)
             return serialaizer.data
-
 
 class CategorySerializer(serializers.ModelSerializer):
     """Сериалайзер модели категории. Родитель: ModelSerializer."""
@@ -44,14 +43,11 @@ class CategorySerializer(serializers.ModelSerializer):
         """
         Метод для удаления из списка подкатегорий значений 'None', полученных в результате фильтрации подкатегорий.
         """
-        # print(value)
-        if value.products.all().exists() or value.subcategories.all().exists():
-            obj = super(CategorySerializer, self).to_representation(value)
-            while obj['subcategories'].count(None) > 0:
-                obj['subcategories'].remove(None)
-            # print(obj)
-            # print(obj['subcategories'])
-            return obj
+
+        obj = super(CategorySerializer, self).to_representation(value)
+        while obj['subcategories'].count(None) > 0:
+            obj['subcategories'].remove(None)
+        return obj
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -106,6 +102,17 @@ class ProductSaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'price', 'salePrice', 'dateFrom', 'dateTo', 'title', 'images']
+
+
+class BannerProductListSerializer(ProductListSerializer):
+    """Сериалайзер модели продукта для баннера. Родитель: ProductListSerializer."""
+
+    category = serializers.SerializerMethodField()
+
+    def get_category(self, obj: Product) -> int:
+        """Метод для получения id категории."""
+
+        return obj.category.id
 
 
 class ProductDetailsSerializer(serializers.ModelSerializer):
