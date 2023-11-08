@@ -14,6 +14,7 @@ from users_app.serializers import ProfileSerializer, UserPasswordSerializer
 
 
 @extend_schema(
+    tags=['auth'],
     parameters=[
         OpenApiParameter(name='username', required=True, type=str, description='Имя пользователя'),
         OpenApiParameter(name='password', required=True, type=str, description='Пароль')
@@ -42,6 +43,7 @@ class SignInView(APIView):
 
 
 @extend_schema(
+    tags=['auth'],
     parameters=[
         OpenApiParameter(name='name', required=True, type=str, description='Имя'),
         OpenApiParameter(name='username', required=True, type=str, description='Имя пользователя'),
@@ -80,6 +82,7 @@ class SignUpView(APIView):
 
 
 @extend_schema(
+    tags=['auth'],
     responses={
         200: OpenApiResponse(description='Выполнен выход из учетной записи'),
     }
@@ -94,6 +97,7 @@ class SignOutView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
+@extend_schema(tags=['profile'])
 class ProfileView(APIView):
     """Представление для просмотра и редактирования профиля пользователя. Родитель: APIView."""
 
@@ -131,6 +135,7 @@ class ProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=['profile'])
 class UserPasswordUpdateView(APIView):
     """Представление для обновления пароля пользователя. Родитель: APIView."""
 
@@ -161,6 +166,7 @@ class UserPasswordUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=['profile'])
 class UserAvatarUpdateView(APIView):
     """Представление для обновления аватара пользователя. Родитель: APIView."""
 

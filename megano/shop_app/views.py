@@ -26,6 +26,7 @@ from shop_app.serializers import (
 from shop_app.tasks import payment
 
 
+@extend_schema(tags=['basket'])
 class BasketView(APIView):
     """Представление корзины с товарами. Родитель: APIView."""
 
@@ -78,6 +79,7 @@ class BasketView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=['order'])
 class OrderListView(APIView):
     """Представление списка заказов. Родитель: APIView."""
 
@@ -128,6 +130,7 @@ class OrderListView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=['order'])
 class OrderDetailView(APIView):
     """Представление детальной страницы заказа. Родитель: APIView."""
 
@@ -172,6 +175,7 @@ class OrderDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(tags=['payment'])
 class PaymentView(APIView):
     """Представление страницы оплаты заказа. Родитель: APIView."""
 
