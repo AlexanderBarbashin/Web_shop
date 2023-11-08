@@ -5,76 +5,95 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('catalog_app', '0001_initial'),
-        ('shop_app', '0021_deliveryprice_free_delivery_point'),
+        ("catalog_app", "0001_initial"),
+        ("shop_app", "0021_deliveryprice_free_delivery_point"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='image',
-            name='product',
+            model_name="image",
+            name="product",
         ),
         migrations.RemoveField(
-            model_name='product',
-            name='category',
+            model_name="product",
+            name="category",
         ),
         migrations.RemoveField(
-            model_name='product',
-            name='sale',
+            model_name="product",
+            name="sale",
         ),
         migrations.RemoveField(
-            model_name='product',
-            name='specifications',
+            model_name="product",
+            name="specifications",
         ),
         migrations.RemoveField(
-            model_name='product',
-            name='tags',
+            model_name="product",
+            name="tags",
         ),
         migrations.RemoveField(
-            model_name='review',
-            name='product',
+            model_name="review",
+            name="product",
         ),
         migrations.AlterField(
-            model_name='basket',
-            name='products',
-            field=models.ManyToManyField(related_name='basket', through='shop_app.ProductsInBasketCount', to='catalog_app.product', verbose_name='Товары в корзине'),
+            model_name="basket",
+            name="products",
+            field=models.ManyToManyField(
+                related_name="basket",
+                through="shop_app.ProductsInBasketCount",
+                to="catalog_app.product",
+                verbose_name="Товары в корзине",
+            ),
         ),
         migrations.AlterField(
-            model_name='order',
-            name='products',
-            field=models.ManyToManyField(related_name='orders', through='shop_app.ProductsInOrderCount', to='catalog_app.product', verbose_name='Товары в заказе'),
+            model_name="order",
+            name="products",
+            field=models.ManyToManyField(
+                related_name="orders",
+                through="shop_app.ProductsInOrderCount",
+                to="catalog_app.product",
+                verbose_name="Товары в заказе",
+            ),
         ),
         migrations.AlterField(
-            model_name='productsinbasketcount',
-            name='product',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products_in_basket_count', to='catalog_app.product', verbose_name='Товар'),
+            model_name="productsinbasketcount",
+            name="product",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="products_in_basket_count",
+                to="catalog_app.product",
+                verbose_name="Товар",
+            ),
         ),
         migrations.AlterField(
-            model_name='productsinordercount',
-            name='product',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='products_in_order_count', to='catalog_app.product', verbose_name='Товар'),
+            model_name="productsinordercount",
+            name="product",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="products_in_order_count",
+                to="catalog_app.product",
+                verbose_name="Товар",
+            ),
         ),
         migrations.DeleteModel(
-            name='Category',
+            name="Category",
         ),
         migrations.DeleteModel(
-            name='Image',
+            name="Image",
         ),
         migrations.DeleteModel(
-            name='Product',
+            name="Product",
         ),
         migrations.DeleteModel(
-            name='Review',
+            name="Review",
         ),
         migrations.DeleteModel(
-            name='Sale',
+            name="Sale",
         ),
         migrations.DeleteModel(
-            name='Specification',
+            name="Specification",
         ),
         migrations.DeleteModel(
-            name='Tag',
+            name="Tag",
         ),
     ]

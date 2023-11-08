@@ -5,28 +5,46 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop_app', '0002_alter_product_options_product_limited_and_more'),
+        ("shop_app", "0002_alter_product_options_product_limited_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Sale',
+            name="Sale",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('salePrice', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Цена со скидкой')),
-                ('dateFrom', models.DateField(verbose_name='Дата начала акции')),
-                ('dateTo', models.DateField(verbose_name='Дата окончания акции')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "salePrice",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=10, verbose_name="Цена со скидкой"
+                    ),
+                ),
+                ("dateFrom", models.DateField(verbose_name="Дата начала акции")),
+                ("dateTo", models.DateField(verbose_name="Дата окончания акции")),
             ],
             options={
-                'verbose_name': 'Скидка',
-                'verbose_name_plural': 'Скидки',
+                "verbose_name": "Скидка",
+                "verbose_name_plural": "Скидки",
             },
         ),
         migrations.AddField(
-            model_name='product',
-            name='sale',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products', to='shop_app.sale', verbose_name='Скидка'),
+            model_name="product",
+            name="sale",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="products",
+                to="shop_app.sale",
+                verbose_name="Скидка",
+            ),
         ),
     ]

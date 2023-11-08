@@ -1,5 +1,4 @@
-from catalog_app.models import (Category, Image, Product, Review,
-                                Specification, Tag)
+from catalog_app.models import Category, Image, Product, Review, Specification, Tag
 from django.template.defaulttags import url
 from rest_framework import serializers
 
@@ -11,7 +10,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ['src', 'alt']
+        fields = ["src", "alt"]
 
     def get_src(self, obj: Image) -> url:
         """Метод для получения ссылки на изображение."""
@@ -29,6 +28,7 @@ class SubcategorySerializer(serializers.Serializer):
             serialaizer = self.parent.parent.__class__(value, context=self.context)
             return serialaizer.data
 
+
 class CategorySerializer(serializers.ModelSerializer):
     """Сериалайзер модели категории. Родитель: ModelSerializer."""
 
@@ -37,7 +37,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'title', 'image', 'subcategories']
+        fields = ["id", "title", "image", "subcategories"]
 
     def to_representation(self, value: Category) -> dict:
         """
@@ -45,8 +45,8 @@ class CategorySerializer(serializers.ModelSerializer):
         """
 
         obj = super(CategorySerializer, self).to_representation(value)
-        while obj['subcategories'].count(None) > 0:
-            obj['subcategories'].remove(None)
+        while obj["subcategories"].count(None) > 0:
+            obj["subcategories"].remove(None)
         return obj
 
 
@@ -55,7 +55,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -63,7 +63,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = "__all__"
 
 
 class SpecificationSerializer(serializers.ModelSerializer):
@@ -71,7 +71,7 @@ class SpecificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Specification
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -86,22 +86,32 @@ class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'id', 'category', 'price', 'count', 'date', 'title', 'description', 'freeDelivery', 'images', 'tags',
-            'reviews', 'rating'
+            "id",
+            "category",
+            "price",
+            "count",
+            "date",
+            "title",
+            "description",
+            "freeDelivery",
+            "images",
+            "tags",
+            "reviews",
+            "rating",
         ]
 
 
 class ProductSaleSerializer(serializers.ModelSerializer):
     """Сериалайзер модели продукта со скидкой. Родитель: ModelSerializer."""
 
-    salePrice = serializers.CharField(source='sale.salePrice')
-    dateFrom = serializers.DateField(source='sale.dateFrom')
-    dateTo = serializers.DateField(source='sale.dateTo')
+    salePrice = serializers.CharField(source="sale.salePrice")
+    dateFrom = serializers.DateField(source="sale.dateFrom")
+    dateTo = serializers.DateField(source="sale.dateTo")
     images = ImageSerializer(many=True)
 
     class Meta:
         model = Product
-        fields = ['id', 'price', 'salePrice', 'dateFrom', 'dateTo', 'title', 'images']
+        fields = ["id", "price", "salePrice", "dateFrom", "dateTo", "title", "images"]
 
 
 class BannerProductListSerializer(ProductListSerializer):
@@ -127,6 +137,18 @@ class ProductDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'id', 'category', 'price', 'count', 'date', 'title', 'description', 'fullDescription', 'freeDelivery',
-            'images', 'tags', 'reviews', 'specifications', 'rating'
+            "id",
+            "category",
+            "price",
+            "count",
+            "date",
+            "title",
+            "description",
+            "fullDescription",
+            "freeDelivery",
+            "images",
+            "tags",
+            "reviews",
+            "specifications",
+            "rating",
         ]

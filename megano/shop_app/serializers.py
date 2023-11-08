@@ -15,7 +15,9 @@ class ProductInBasketListSerializer(ProductListSerializer):
     def get_count(self, obj: Product) -> int:
         """Метод для получения количества товара в корзине."""
 
-        products_in_basket_count = obj.products_in_basket_count.get(basket=self.context['basket'])
+        products_in_basket_count = obj.products_in_basket_count.get(
+            basket=self.context["basket"]
+        )
         return products_in_basket_count.count_in_basket
 
 
@@ -26,17 +28,20 @@ class ProductUpdateBasketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'count']
+        fields = ["id", "count"]
 
 
 class ProductInOrderListSerializer(ProductListSerializer):
     """Сериалайзер для отображения списка товаров в заказе. Родитель: ProductListSerializer."""
+
     count = serializers.SerializerMethodField()
 
     def get_count(self, obj: Product) -> int:
         """Метод для получения количества товара в заказе."""
 
-        products_in_order_count = obj.products_in_order_count.filter(order__in=self.context['orders']).first()
+        products_in_order_count = obj.products_in_order_count.filter(
+            order__in=self.context["orders"]
+        ).first()
         return products_in_order_count.count_in_order
 
 
@@ -47,15 +52,17 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['products']
+        fields = ["products"]
 
     def create(self, validated_data: List[Dict]) -> Order:
         """Метод для создания заказа."""
 
-        products = validated_data.pop('products')
+        products = validated_data.pop("products")
         order = Order.objects.create()
         for product in products:
-            order.products.add(product['id'], through_defaults={'count_in_order': product['count']})
+            order.products.add(
+                product["id"], through_defaults={"count_in_order": product["count"]}
+            )
         return order
 
 
@@ -66,8 +73,20 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id', 'createdAt', 'fullName', 'email', 'phone', 'deliveryType', 'paymentType', 'totalCost', 'status',
-                  'city', 'address', 'products']
+        fields = [
+            "id",
+            "createdAt",
+            "fullName",
+            "email",
+            "phone",
+            "deliveryType",
+            "paymentType",
+            "totalCost",
+            "status",
+            "city",
+            "address",
+            "products",
+        ]
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
@@ -77,7 +96,16 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['fullName', 'email', 'phone', 'deliveryType', 'paymentType', 'totalCost', 'city', 'address']
+        fields = [
+            "fullName",
+            "email",
+            "phone",
+            "deliveryType",
+            "paymentType",
+            "totalCost",
+            "city",
+            "address",
+        ]
 
 
 class PaymentSerializer(serializers.Serializer):
@@ -94,37 +122,35 @@ class PaymentSerializer(serializers.Serializer):
 
         if value.isdigit():
             return value
-        raise serializers.ValidationError('Номер карты не соответствует формату!')
+        raise serializers.ValidationError("Номер карты не соответствует формату!")
 
     def validate_code(self, value: str) -> str:
         """Метод для валидации CVV кода карты."""
 
         if value.isdigit():
             return value
-        raise serializers.ValidationError('Код CVV не соответствует формату!')
+        raise serializers.ValidationError("Код CVV не соответствует формату!")
 
     def validate_name(self, value: str) -> str:
         """Метод для валидации ФИО владельца карты."""
 
-        new_value = value.replace(' ', '').replace("'", '')
+        new_value = value.replace(" ", "").replace("'", "")
         if new_value.isalpha():
             return value
-        raise serializers.ValidationError('ФИО не соответствует формату!')
+        raise serializers.ValidationError("ФИО не соответствует формату!")
 
     def validate(self, data: Dict) -> Dict:
         """Метод для валидации срока действия карты."""
 
-        card_date_string = '{year}-{month}'.format(
-            year=str(data['year']),
-            month=str(data['month'])
+        card_date_string = "{year}-{month}".format(
+            year=str(data["year"]), month=str(data["month"])
         )
-        card_date = time.strptime(card_date_string, '%y-%m')
+        card_date = time.strptime(card_date_string, "%y-%m")
         now = datetime.now()
-        today_string = '{year}-{month}'.format(
-            year=str(now.year)[2:],
-            month=str(now.month)
+        today_string = "{year}-{month}".format(
+            year=str(now.year)[2:], month=str(now.month)
         )
-        today = time.strptime(today_string, '%y-%m')
+        today = time.strptime(today_string, "%y-%m")
         if today > card_date:
-            raise serializers.ValidationError('Карта просрочена!')
+            raise serializers.ValidationError("Карта просрочена!")
         return data

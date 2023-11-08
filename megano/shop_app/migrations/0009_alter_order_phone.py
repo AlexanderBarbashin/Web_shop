@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop_app', '0008_order'),
+        ("shop_app", "0008_order"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='phone',
-            field=models.PositiveIntegerField(null=True, verbose_name='Номер телефона'),
+            model_name="order",
+            name="phone",
+            field=models.PositiveIntegerField(null=True, verbose_name="Номер телефона"),
         ),
     ]

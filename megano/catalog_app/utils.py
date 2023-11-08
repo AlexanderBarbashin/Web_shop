@@ -10,14 +10,18 @@ from rest_framework.response import Response
 class ProductListFilter(FilterSet):
     """Фильтр списка продуктов. Родитель: FilterSet."""
 
-    minPrice = NumberFilter(field_name='price', lookup_expr='gte')
-    maxPrice = NumberFilter(field_name='price', lookup_expr='lte')
-    freeDelivery = BooleanFilter(field_name='freeDelivery', method='filter_free_delivery')
-    available = BooleanFilter(field_name='count', method='filter_available')
-    tags = CharFilter(field_name='tags', method='filter_tags')
-    category = NumberFilter(field_name='category', method='filter_category')
+    minPrice = NumberFilter(field_name="price", lookup_expr="gte")
+    maxPrice = NumberFilter(field_name="price", lookup_expr="lte")
+    freeDelivery = BooleanFilter(
+        field_name="freeDelivery", method="filter_free_delivery"
+    )
+    available = BooleanFilter(field_name="count", method="filter_available")
+    tags = CharFilter(field_name="tags", method="filter_tags")
+    category = NumberFilter(field_name="category", method="filter_category")
 
-    def filter_free_delivery(self, queryset: QuerySet, name: str, value: bool) -> QuerySet:
+    def filter_free_delivery(
+        self, queryset: QuerySet, name: str, value: bool
+    ) -> QuerySet:
         """Метод для фильтрации продуктов с бесплатной доставкой."""
 
         if value:
@@ -45,7 +49,9 @@ class ProductListFilter(FilterSet):
 
         category = Category.objects.get(pk=value)
         if not category.main_category:
-            categories_list = Category.objects.filter(Q(main_category=category) | Q(pk=value))
+            categories_list = Category.objects.filter(
+                Q(main_category=category) | Q(pk=value)
+            )
         else:
             categories_list = Category.objects.filter(pk=value)
         queryset = queryset.filter(category__in=categories_list)
@@ -53,13 +59,21 @@ class ProductListFilter(FilterSet):
 
     class Meta:
         model = Product
-        fields = ['minPrice', 'maxPrice', 'freeDelivery', 'available', 'tags', 'category']
+        fields = [
+            "minPrice",
+            "maxPrice",
+            "freeDelivery",
+            "available",
+            "tags",
+            "category",
+        ]
 
 
 class ProductListViewPagination(PageNumberPagination):
     """Пагинатор списка товаров. Родитель: PageNumberPagination."""
+
     page_size = 4
-    page_query_param = 'currentPage'
+    page_query_param = "currentPage"
 
     def get_paginated_response(self, data: dict) -> Response:
         """Метод для получения списка товаров, разделенного постранично."""
@@ -67,9 +81,9 @@ class ProductListViewPagination(PageNumberPagination):
         last_page_number = self.page.paginator.num_pages
         return Response(
             {
-                'items': data,
-                'currentPage': self.page.number,
-                'lastPage': last_page_number
+                "items": data,
+                "currentPage": self.page.number,
+                "lastPage": last_page_number,
             }
         )
 
@@ -82,28 +96,33 @@ class SaleListViewPagination(ProductListViewPagination):
 
 def request_handler(request: Request) -> Request:
     """Функция для приведения параметров запроса поиска товаров в соответствие полям фильтров"""
-    if not 'search' in request.query_params:
-        request.query_params['search'] = request.query_params.get('filter[name]', '')
-    if not 'minPrice' in request.query_params:
-        request.query_params['minPrice'] = int(request.query_params.get('filter[minPrice]', 1))
-    if not 'maxPrice' in request.query_params:
-        request.query_params['maxPrice'] = int(request.query_params.get('filter[maxPrice]', 50000))
-    if not 'freeDelivery' in request.query_params:
-        request.query_params['freeDelivery'] = request.query_params.get('filter[freeDelivery]', False)
-    if not 'available' in request.query_params:
-        request.query_params['available'] = request.query_params.get('filter[available]', True)
-    if not 'ordering' in request.query_params:
-        query_sort_type = request.query_params.get('sortType', 'inc')
-        if query_sort_type == 'dec':
-            sort_type = '-'
-        else:
-            sort_type = ''
-        request.query_params['ordering'] = '{sort_type}{sort}'.format(
-            sort_type=sort_type,
-            sort=request.query_params.get('sort', 'price')
-        ).replace(
-            'reviews', 'product_reviews'
+    if not "search" in request.query_params:
+        request.query_params["search"] = request.query_params.get("filter[name]", "")
+    if not "minPrice" in request.query_params:
+        request.query_params["minPrice"] = int(
+            request.query_params.get("filter[minPrice]", 1)
         )
-    if not 'tags' in request.query_params:
-        request.query_params['tags'] = request.query_params.getlist('tags[]')
+    if not "maxPrice" in request.query_params:
+        request.query_params["maxPrice"] = int(
+            request.query_params.get("filter[maxPrice]", 50000)
+        )
+    if not "freeDelivery" in request.query_params:
+        request.query_params["freeDelivery"] = request.query_params.get(
+            "filter[freeDelivery]", False
+        )
+    if not "available" in request.query_params:
+        request.query_params["available"] = request.query_params.get(
+            "filter[available]", True
+        )
+    if not "ordering" in request.query_params:
+        query_sort_type = request.query_params.get("sortType", "inc")
+        if query_sort_type == "dec":
+            sort_type = "-"
+        else:
+            sort_type = ""
+        request.query_params["ordering"] = "{sort_type}{sort}".format(
+            sort_type=sort_type, sort=request.query_params.get("sort", "price")
+        ).replace("reviews", "product_reviews")
+    if not "tags" in request.query_params:
+        request.query_params["tags"] = request.query_params.getlist("tags[]")
     return request

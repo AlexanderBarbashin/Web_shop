@@ -6,21 +6,26 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('shop_app', '0006_remove_basket_products_remove_basket_profile_and_more'),
+        ("shop_app", "0006_remove_basket_products_remove_basket_profile_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='basket',
-            name='session_id',
+            model_name="basket",
+            name="session_id",
             field=models.CharField(max_length=100, null=True),
         ),
         migrations.AlterField(
-            model_name='basket',
-            name='user',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='basket', to=settings.AUTH_USER_MODEL, verbose_name='Пользователь'),
+            model_name="basket",
+            name="user",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="basket",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Пользователь",
+            ),
         ),
     ]

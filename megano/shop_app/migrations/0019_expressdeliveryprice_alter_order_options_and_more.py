@@ -5,35 +5,64 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop_app', '0018_alter_order_status'),
+        ("shop_app", "0018_alter_order_status"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ExpressDeliveryPrice',
+            name="ExpressDeliveryPrice",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Стоимость')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "price",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=10, verbose_name="Стоимость"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Стоимость экспресс доставки',
-                'verbose_name_plural': 'Стоимость экспресс доставки',
+                "verbose_name": "Стоимость экспресс доставки",
+                "verbose_name_plural": "Стоимость экспресс доставки",
             },
         ),
         migrations.AlterModelOptions(
-            name='order',
-            options={'ordering': ['-createdAt'], 'verbose_name': 'Заказ', 'verbose_name_plural': 'Заказы'},
+            name="order",
+            options={
+                "ordering": ["-createdAt"],
+                "verbose_name": "Заказ",
+                "verbose_name_plural": "Заказы",
+            },
         ),
         migrations.AlterField(
-            model_name='product',
-            name='sale',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products', to='shop_app.sale', verbose_name='Скидка'),
+            model_name="product",
+            name="sale",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="products",
+                to="shop_app.sale",
+                verbose_name="Скидка",
+            ),
         ),
         migrations.AlterField(
-            model_name='product',
-            name='specifications',
-            field=models.ManyToManyField(blank=True, null=True, related_name='products', to='shop_app.specification', verbose_name='Характеристики'),
+            model_name="product",
+            name="specifications",
+            field=models.ManyToManyField(
+                blank=True,
+                null=True,
+                related_name="products",
+                to="shop_app.specification",
+                verbose_name="Характеристики",
+            ),
         ),
     ]

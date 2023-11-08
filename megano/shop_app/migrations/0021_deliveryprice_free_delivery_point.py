@@ -4,16 +4,20 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop_app', '0020_deliveryprice'),
+        ("shop_app", "0020_deliveryprice"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='deliveryprice',
-            name='free_delivery_point',
-            field=models.DecimalField(decimal_places=2, default=2000, max_digits=10, verbose_name='Порог бесплатной доставки'),
+            model_name="deliveryprice",
+            name="free_delivery_point",
+            field=models.DecimalField(
+                decimal_places=2,
+                default=2000,
+                max_digits=10,
+                verbose_name="Порог бесплатной доставки",
+            ),
             preserve_default=False,
         ),
     ]

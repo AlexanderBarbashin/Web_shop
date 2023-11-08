@@ -5,16 +5,21 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users_app', '0014_alter_profile_email'),
-        ('shop_app', '0010_alter_order_totalcost'),
+        ("users_app", "0014_alter_profile_email"),
+        ("shop_app", "0010_alter_order_totalcost"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='profile',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='orders', to='users_app.profile', verbose_name='Профиль'),
+            model_name="order",
+            name="profile",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="orders",
+                to="users_app.profile",
+                verbose_name="Профиль",
+            ),
         ),
     ]

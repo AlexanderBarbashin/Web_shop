@@ -19,29 +19,28 @@ class BasketViewTestCase(APITestCase):
     def setUpClass(cls) -> None:
         """Метод для предварительной подготовки БД к проведению теста."""
 
-        cls.credentials = dict(username='test_user', password='test_password')
+        cls.credentials = dict(username="test_user", password="test_password")
         cls.user = User.objects.create_user(**cls.credentials)
-        product_image = os.path.join(settings.MEDIA_ROOT / 'catalog_app_images', 'test_product.jpg')
+        product_image = os.path.join(
+            settings.MEDIA_ROOT / "catalog_app_images", "test_product.jpg"
+        )
         cls.image = Image.objects.create(src=product_image)
         cls.category = Category.objects.create(
-            title='test_category_title',
-            image=cls.image
+            title="test_category_title", image=cls.image
         )
         cls.product = Product.objects.create(
             category=cls.category,
             price=100,
             count=1,
-            title='test_product_title',
-            description='test_description',
-            fullDescription='test_fullDescription',
+            title="test_product_title",
+            description="test_description",
+            fullDescription="test_fullDescription",
             freeDelivery=False,
-            limited=False
+            limited=False,
         )
         cls.basket = Basket.objects.create(user=cls.user)
         cls.products_in_basket_count = ProductsInBasketCount.objects.create(
-            basket=cls.basket,
-            product=cls.product,
-            count_in_basket=cls.product.count
+            basket=cls.basket, product=cls.product, count_in_basket=cls.product.count
         )
 
     @classmethod
@@ -54,7 +53,6 @@ class BasketViewTestCase(APITestCase):
         cls.category.delete()
         cls.image.delete()
 
-
     def setUp(self) -> None:
         """Метод для предварительной подготовки БД к проведению теста."""
 
@@ -63,49 +61,35 @@ class BasketViewTestCase(APITestCase):
     def test_get_products_in_basket(self) -> None:
         """Метод для тестирования получения списка продуктов в корзине пользователя."""
 
-        response = self.client.get(
-            reverse('basket')
-        )
+        response = self.client.get(reverse("basket"))
         recieved_data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertQuerySetEqual(
             qs=Product.objects.all(),
-            values=({product['id']: product['count']} for product in recieved_data),
-            transform=lambda product: {product.id: product.count}
+            values=({product["id"]: product["count"]} for product in recieved_data),
+            transform=lambda product: {product.id: product.count},
         )
 
     def test_add_product_to_basket(self) -> None:
         """Метод для тестирования добавления продуктов в корзину пользователя."""
 
         product_id = self.product.id
-        response = self.client.post(
-            reverse('basket'),
-            {
-                'id': product_id,
-                'count': 1
-            }
-        )
+        response = self.client.post(reverse("basket"), {"id": product_id, "count": 1})
         self.product.count += 1
-        self.product.save(update_fields=['count'])
+        self.product.save(update_fields=["count"])
         recieved_data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertQuerySetEqual(
             qs=Product.objects.all(),
-            values=({product['id']: product['count']} for product in recieved_data),
-            transform=lambda product: {product.id: product.count}
+            values=({product["id"]: product["count"]} for product in recieved_data),
+            transform=lambda product: {product.id: product.count},
         )
 
     def test_delete_product_from_basket(self) -> None:
         """Метод для тестирования удаления продуктов из корзины пользователя."""
 
         product_id = self.product.id
-        response = self.client.delete(
-            reverse('basket'),
-            {
-                'id': product_id,
-                'count': 1
-            }
-        )
+        response = self.client.delete(reverse("basket"), {"id": product_id, "count": 1})
         recieved_data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(recieved_data, [])
@@ -120,21 +104,22 @@ class OrderCreateViewTestCase(APITestCase):
 
         Order.objects.all().delete()
         cls.image = Image.objects.create(
-            src=os.path.join(settings.MEDIA_ROOT / 'catalog_app_images', 'test_product.jpg')
+            src=os.path.join(
+                settings.MEDIA_ROOT / "catalog_app_images", "test_product.jpg"
+            )
         )
         cls.category = Category.objects.create(
-            title='test_category_title',
-            image=cls.image
+            title="test_category_title", image=cls.image
         )
         cls.product = Product.objects.create(
             category=cls.category,
             price=100,
             count=1,
-            title='test_product_title',
-            description='test_description',
-            fullDescription='test_fullDescription',
+            title="test_product_title",
+            description="test_description",
+            fullDescription="test_fullDescription",
             freeDelivery=False,
-            limited=False
+            limited=False,
         )
 
     @classmethod
@@ -149,36 +134,41 @@ class OrderCreateViewTestCase(APITestCase):
         """Метод для тестирования создания заказа."""
 
         response = self.client.post(
-            reverse('orders'),
+            reverse("orders"),
             [
                 {
-                    'id': self.product.id,
-                    'category': {
-                        'title': self.product.category.title,
-                        'image': {
-                            'src': os.path.join(settings.MEDIA_ROOT / 'catalog_app_images', 'test_product.jpg'),
-                            'alt': 'test_category_image'
+                    "id": self.product.id,
+                    "category": {
+                        "title": self.product.category.title,
+                        "image": {
+                            "src": os.path.join(
+                                settings.MEDIA_ROOT / "catalog_app_images",
+                                "test_product.jpg",
+                            ),
+                            "alt": "test_category_image",
                         },
-                        'subcategories': []
+                        "subcategories": [],
                     },
-                    'price': self.product.price,
-                    'count': self.product.count,
-                    'date': self.product.date,
-                    'title': self.product.title,
-                    'description': self.product.description,
-                    'freeDelivery': self.product.freeDelivery,
-                    'images': [
+                    "price": self.product.price,
+                    "count": self.product.count,
+                    "date": self.product.date,
+                    "title": self.product.title,
+                    "description": self.product.description,
+                    "freeDelivery": self.product.freeDelivery,
+                    "images": [
                         {
-                            'src': os.path.join(settings.MEDIA_ROOT / 'catalog_app_images', 'test_product.jpg'),
-                            'alt': 'test_image'
+                            "src": os.path.join(
+                                settings.MEDIA_ROOT / "catalog_app_images",
+                                "test_product.jpg",
+                            ),
+                            "alt": "test_image",
                         }
                     ],
-                    'tags': [],
-                    'reviews': [],
-                    'rating': 5.0
+                    "tags": [],
+                    "reviews": [],
+                    "rating": 5.0,
                 }
-
-            ]
+            ],
         )
         self.assertEqual(response.status_code, 200)
         self.assertTrue(Order.objects.exists())
@@ -191,11 +181,11 @@ class OrderListViewTestCase(APITestCase):
     def setUpClass(cls) -> None:
         """Метод для предварительной подготовки БД к проведению теста."""
 
-        cls.credentials = dict(username='test_user', password='test_password')
+        cls.credentials = dict(username="test_user", password="test_password")
         cls.user = User.objects.create_user(**cls.credentials)
         cls.profile = Profile.objects.create(
             user=cls.user,
-            fullName='test_name',
+            fullName="test_name",
         )
         cls.order = Order.objects.create(profile=cls.profile)
 
@@ -214,15 +204,13 @@ class OrderListViewTestCase(APITestCase):
     def test_get_orders_list(self) -> None:
         """Метод для тестирования получения списка заказов."""
 
-        response = self.client.get(
-            reverse('orders')
-        )
+        response = self.client.get(reverse("orders"))
         recieved_data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertQuerySetEqual(
-            qs=Order.objects.select_related('profile').filter(profile=self.profile),
-            values=(order['id'] for order in recieved_data),
-            transform=lambda order: order.id
+            qs=Order.objects.select_related("profile").filter(profile=self.profile),
+            values=(order["id"] for order in recieved_data),
+            transform=lambda order: order.id,
         )
 
 
@@ -233,34 +221,34 @@ class OrderDetailViewTestCase(APITestCase):
     def setUpClass(cls) -> None:
         """Метод для предварительной подготовки БД к проведению теста."""
 
-        cls.credentials = dict(username='test_user', password='test_password')
+        cls.credentials = dict(username="test_user", password="test_password")
         cls.user = User.objects.create_user(**cls.credentials)
         cls.profile = Profile.objects.create(
             user=cls.user,
-            fullName='test_name',
+            fullName="test_name",
         )
         cls.order = Order.objects.create(profile=cls.profile)
         cls.image = Image.objects.create(
-            src=os.path.join(settings.MEDIA_ROOT / 'catalog_app_images', 'test_product.jpg')
+            src=os.path.join(
+                settings.MEDIA_ROOT / "catalog_app_images", "test_product.jpg"
+            )
         )
         cls.category = Category.objects.create(
-            title='test_category_title',
-            image=cls.image
+            title="test_category_title", image=cls.image
         )
         cls.product = Product.objects.create(
             category=cls.category,
             price=100,
             count=1,
-            title='test_product_title',
-            description='test_description',
-            fullDescription='test_fullDescription',
+            title="test_product_title",
+            description="test_description",
+            fullDescription="test_fullDescription",
             freeDelivery=False,
-            limited=False
+            limited=False,
         )
         cls.order.products.add(cls.product)
         cls.delivery_price = DeliveryPrice.objects.create(
-            free_delivery_point=2000.00,
-            price=200.00
+            free_delivery_point=2000.00, price=200.00
         )
 
     @classmethod
@@ -283,10 +271,7 @@ class OrderDetailViewTestCase(APITestCase):
         """Метод для тестирования получения детальной информации о заказе."""
 
         response = self.client.get(
-            reverse(
-                'order_detail',
-                kwargs={'pk': self.order.pk}
-            )
+            reverse("order_detail", kwargs={"pk": self.order.pk})
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.order.profile.fullName)
@@ -295,51 +280,54 @@ class OrderDetailViewTestCase(APITestCase):
         """Метод для тестирования подтверждения заказа."""
 
         response = self.client.post(
-            reverse(
-                'order_detail',
-                kwargs={'pk': self.order.pk}
-            ),
+            reverse("order_detail", kwargs={"pk": self.order.pk}),
             {
-                'id': self.order.id,
-                'createdAt': self.order.createdAt,
-                'fullName': 'test_name',
-                'email': 'test@email.ru',
-                'phone': '1234567890',
-                'deliveryType': 'free',
-                'paymentType': 'online',
-                'totalCost': 100.00,
-                'status': 'created',
-                'city': 'test_city',
-                'address': 'test_address',
-                'products': [
+                "id": self.order.id,
+                "createdAt": self.order.createdAt,
+                "fullName": "test_name",
+                "email": "test@email.ru",
+                "phone": "1234567890",
+                "deliveryType": "free",
+                "paymentType": "online",
+                "totalCost": 100.00,
+                "status": "created",
+                "city": "test_city",
+                "address": "test_address",
+                "products": [
                     {
-                        'id': self.product.id,
-                        'category': {
-                            'title': self.product.category.title,
-                            'image': {
-                                'src': os.path.join(settings.MEDIA_ROOT / 'catalog_app_images', 'test_product.jpg'),
-                                'alt': 'test_category_image'
+                        "id": self.product.id,
+                        "category": {
+                            "title": self.product.category.title,
+                            "image": {
+                                "src": os.path.join(
+                                    settings.MEDIA_ROOT / "catalog_app_images",
+                                    "test_product.jpg",
+                                ),
+                                "alt": "test_category_image",
                             },
-                            'subcategories': []
+                            "subcategories": [],
                         },
-                        'price': self.product.price,
-                        'count': self.product.count,
-                        'date': self.product.date,
-                        'title': self.product.title,
-                        'description': self.product.description,
-                        'freeDelivery': self.product.freeDelivery,
-                        'images': [
+                        "price": self.product.price,
+                        "count": self.product.count,
+                        "date": self.product.date,
+                        "title": self.product.title,
+                        "description": self.product.description,
+                        "freeDelivery": self.product.freeDelivery,
+                        "images": [
                             {
-                                'src': os.path.join(settings.MEDIA_ROOT / 'catalog_app_images', 'test_product.jpg'),
-                                'alt': 'test_image'
+                                "src": os.path.join(
+                                    settings.MEDIA_ROOT / "catalog_app_images",
+                                    "test_product.jpg",
+                                ),
+                                "alt": "test_image",
                             }
                         ],
-                        'tags': [],
-                        'reviews': [],
-                        'rating': 5.0
+                        "tags": [],
+                        "reviews": [],
+                        "rating": 5.0,
                     }
-                ]
-            }
+                ],
+            },
         )
         self.assertEqual(response.status_code, 200)
 
@@ -373,17 +361,14 @@ class PaymentViewTestCase(APITestCase):
         """Метод для тестирования оплаты заказа."""
 
         response = self.client.post(
-            reverse(
-                'payment',
-                kwargs={'pk': self.order.pk}
-            ),
+            reverse("payment", kwargs={"pk": self.order.pk}),
             {
-                'number': 2222222222222222,
-                'name': 'Test name',
-                'month': 12,
-                'year': 25,
-                'code': 123
-            }
+                "number": 2222222222222222,
+                "name": "Test name",
+                "month": 12,
+                "year": 25,
+                "code": 123,
+            },
         )
         self.assertEqual(response.status_code, 200)
 
@@ -391,16 +376,13 @@ class PaymentViewTestCase(APITestCase):
         """Метод для тестирования оплаты заказа с нечетным номером карты."""
 
         response = self.client.post(
-            reverse(
-                'payment',
-                kwargs={'pk': self.order.pk}
-            ),
+            reverse("payment", kwargs={"pk": self.order.pk}),
             {
-                'number': 1111111111111111,
-                'name': 'Test name',
-                'month': 12,
-                'year': 25,
-                'code': 123
-            }
+                "number": 1111111111111111,
+                "name": "Test name",
+                "month": 12,
+                "year": 25,
+                "code": 123,
+            },
         )
         self.assertEqual(response.status_code, 400)

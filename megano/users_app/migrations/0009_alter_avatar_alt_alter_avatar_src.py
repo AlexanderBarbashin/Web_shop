@@ -4,20 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users_app', '0008_alter_profile_avatar'),
+        ("users_app", "0008_alter_profile_avatar"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='avatar',
-            name='alt',
-            field=models.CharField(default='Стандартный аватар', max_length=100, verbose_name='Описание'),
+            model_name="avatar",
+            name="alt",
+            field=models.CharField(
+                default="Стандартный аватар", max_length=100, verbose_name="Описание"
+            ),
         ),
         migrations.AlterField(
-            model_name='avatar',
-            name='src',
-            field=models.ImageField(default='users_app/avatars/default_avatar.gif', upload_to='users_app/avatars/user_avatars/', verbose_name='Ссылка'),
+            model_name="avatar",
+            name="src",
+            field=models.ImageField(
+                default="users_app/avatars/default_avatar.gif",
+                upload_to="users_app/avatars/user_avatars/",
+                verbose_name="Ссылка",
+            ),
         ),
     ]

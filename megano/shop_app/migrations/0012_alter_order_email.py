@@ -4,15 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop_app', '0011_alter_order_profile'),
+        ("shop_app", "0011_alter_order_profile"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='email',
-            field=models.EmailField(max_length=254, null=True, verbose_name='Электронный адрес'),
+            model_name="order",
+            name="email",
+            field=models.EmailField(
+                max_length=254, null=True, verbose_name="Электронный адрес"
+            ),
         ),
     ]

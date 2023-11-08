@@ -5,20 +5,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users_app', '0012_alter_avatar_src'),
+        ("users_app", "0012_alter_avatar_src"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='avatar',
-            name='src',
-            field=models.ImageField(default='avatars/default_avatar.gif', upload_to=users_app.models.user_avatar_directory_path, validators=[users_app.models.image_size_validate], verbose_name='Ссылка'),
+            model_name="avatar",
+            name="src",
+            field=models.ImageField(
+                default="avatars/default_avatar.gif",
+                upload_to=users_app.models.user_avatar_directory_path,
+                validators=[users_app.models.image_size_validate],
+                verbose_name="Ссылка",
+            ),
         ),
         migrations.AlterField(
-            model_name='profile',
-            name='email',
+            model_name="profile",
+            name="email",
             field=models.EmailField(max_length=254, null=True, unique=True),
         ),
     ]

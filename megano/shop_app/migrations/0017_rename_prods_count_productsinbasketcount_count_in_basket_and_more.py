@@ -4,20 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop_app', '0016_order_products'),
+        ("shop_app", "0016_order_products"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='productsinbasketcount',
-            old_name='prods_count',
-            new_name='count_in_basket',
+            model_name="productsinbasketcount",
+            old_name="prods_count",
+            new_name="count_in_basket",
         ),
         migrations.AddField(
-            model_name='basket',
-            name='products',
-            field=models.ManyToManyField(related_name='basket', through='shop_app.ProductsInBasketCount', to='shop_app.product', verbose_name='Товары в корзине'),
+            model_name="basket",
+            name="products",
+            field=models.ManyToManyField(
+                related_name="basket",
+                through="shop_app.ProductsInBasketCount",
+                to="shop_app.product",
+                verbose_name="Товары в корзине",
+            ),
         ),
     ]

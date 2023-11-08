@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -15,30 +14,88 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Avatar',
+            name="Avatar",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('src', models.ImageField(default='users_app/avatars/default_avatar.gif', upload_to='users_app/avatars/user_avatars/', verbose_name='Ссылка')),
-                ('alt', models.CharField(max_length=100, verbose_name='Описание')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "src",
+                    models.ImageField(
+                        default="users_app/avatars/default_avatar.gif",
+                        upload_to="users_app/avatars/user_avatars/",
+                        verbose_name="Ссылка",
+                    ),
+                ),
+                ("alt", models.CharField(max_length=100, verbose_name="Описание")),
             ],
             options={
-                'verbose_name': 'Aватар',
-                'verbose_name_plural': 'Аватары',
+                "verbose_name": "Aватар",
+                "verbose_name_plural": "Аватары",
             },
         ),
         migrations.CreateModel(
-            name='Profile',
+            name="Profile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('fullName', models.CharField(max_length=150, verbose_name='Полное имя')),
-                ('phone', models.PositiveIntegerField(blank=True, null=True, unique=True, verbose_name='Номер телефона')),
-                ('balance', models.DecimalField(decimal_places=2, default=0, max_digits=10, verbose_name='Баланс')),
-                ('avatar', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='profile', to='users_app.avatar', verbose_name='Аватар')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='profile', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "fullName",
+                    models.CharField(max_length=150, verbose_name="Полное имя"),
+                ),
+                (
+                    "phone",
+                    models.PositiveIntegerField(
+                        blank=True,
+                        null=True,
+                        unique=True,
+                        verbose_name="Номер телефона",
+                    ),
+                ),
+                (
+                    "balance",
+                    models.DecimalField(
+                        decimal_places=2,
+                        default=0,
+                        max_digits=10,
+                        verbose_name="Баланс",
+                    ),
+                ),
+                (
+                    "avatar",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="profile",
+                        to="users_app.avatar",
+                        verbose_name="Аватар",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="profile",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Профиль',
-                'verbose_name_plural': 'Профили',
+                "verbose_name": "Профиль",
+                "verbose_name_plural": "Профили",
             },
         ),
     ]

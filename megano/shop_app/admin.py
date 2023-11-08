@@ -6,19 +6,19 @@ from shop_app.models import Basket, DeliveryPrice, ExpressDeliveryPrice, Order
 class BasketAdmin(admin.ModelAdmin):
     """Класс для администрирования модели корзины. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'user'
+    list_display = "pk", "user"
 
 
 class OrderAdmin(admin.ModelAdmin):
     """Класс для администрирования модели заказа. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'totalCost'
+    list_display = "pk", "totalCost"
 
 
 class DeliveryPriceAdmin(admin.ModelAdmin):
     """Класс для администрирования модели стоимости доставки. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'free_delivery_point', 'price'
+    list_display = "pk", "free_delivery_point", "price"
 
     def has_add_permission(self, request: HttpRequest) -> bool:
         """Метод для обеспечения невозможности создания второго экземпляра модели."""
@@ -29,7 +29,7 @@ class DeliveryPriceAdmin(admin.ModelAdmin):
 class ExpressDeliveryPriceAdmin(admin.ModelAdmin):
     """Класс для администрирования модели стоимости экспресс доставки. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'price'
+    list_display = "pk", "price"
 
     def has_add_permission(self, request: HttpRequest) -> bool:
         """Метод для обеспечения невозможности создания второго экземпляра модели."""

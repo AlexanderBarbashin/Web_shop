@@ -5,27 +5,54 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users_app', '0014_alter_profile_email'),
-        ('shop_app', '0003_sale_product_sale'),
+        ("users_app", "0014_alter_profile_email"),
+        ("shop_app", "0003_sale_product_sale"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='review',
-            options={'ordering': ['-date'], 'verbose_name': 'Отзыв', 'verbose_name_plural': 'Отзывы'},
+            name="review",
+            options={
+                "ordering": ["-date"],
+                "verbose_name": "Отзыв",
+                "verbose_name_plural": "Отзывы",
+            },
         ),
         migrations.CreateModel(
-            name='Basket',
+            name="Basket",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('products', models.ManyToManyField(null=True, related_name='basket', to='shop_app.product', verbose_name='Продукты')),
-                ('profile', models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, related_name='basket', to='users_app.profile', verbose_name='Профиль')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "products",
+                    models.ManyToManyField(
+                        null=True,
+                        related_name="basket",
+                        to="shop_app.product",
+                        verbose_name="Продукты",
+                    ),
+                ),
+                (
+                    "profile",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="basket",
+                        to="users_app.profile",
+                        verbose_name="Профиль",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Корзина',
-                'verbose_name_plural': 'Корзины',
+                "verbose_name": "Корзина",
+                "verbose_name_plural": "Корзины",
             },
         ),
     ]

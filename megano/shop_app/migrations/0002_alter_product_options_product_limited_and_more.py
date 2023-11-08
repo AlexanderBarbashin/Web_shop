@@ -4,25 +4,34 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop_app', '0001_initial'),
+        ("shop_app", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='product',
-            options={'ordering': ['price'], 'verbose_name': 'Продукт', 'verbose_name_plural': 'Продукты'},
+            name="product",
+            options={
+                "ordering": ["price"],
+                "verbose_name": "Продукт",
+                "verbose_name_plural": "Продукты",
+            },
         ),
         migrations.AddField(
-            model_name='product',
-            name='limited',
-            field=models.BooleanField(default=False, verbose_name='Ограниченный тираж'),
+            model_name="product",
+            name="limited",
+            field=models.BooleanField(default=False, verbose_name="Ограниченный тираж"),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='product',
-            name='tags',
-            field=models.ManyToManyField(blank=True, null=True, related_name='products', to='shop_app.tag', verbose_name='Тэги'),
+            model_name="product",
+            name="tags",
+            field=models.ManyToManyField(
+                blank=True,
+                null=True,
+                related_name="products",
+                to="shop_app.tag",
+                verbose_name="Тэги",
+            ),
         ),
     ]

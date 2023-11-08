@@ -10,9 +10,7 @@ def payment(order_pk: str, card_num: str) -> str:
 
     time.sleep(3)
     order = Order.objects.get(id=order_pk)
-    if int(card_num) % 2 == 0 and not card_num.endswith('0'):
-        order.status = 'paid'
-        order.save(update_fields=['status'])
+    if int(card_num) % 2 == 0 and not card_num.endswith("0"):
+        order.status = "paid"
+        order.save(update_fields=["status"])
     return order.status
-
-

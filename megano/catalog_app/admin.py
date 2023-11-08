@@ -1,36 +1,43 @@
-from catalog_app.models import (Category, Image, Product, Review, Sale,
-                                Specification, Tag)
+from catalog_app.models import (
+    Category,
+    Image,
+    Product,
+    Review,
+    Sale,
+    Specification,
+    Tag,
+)
 from django.contrib import admin
 
 
 class CategoryAdmin(admin.ModelAdmin):
     """Класс для администрирования модели категории и подкатегории. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'title', 'image', 'main_category'
+    list_display = "pk", "title", "image", "main_category"
 
 
 class ImageAdmin(admin.ModelAdmin):
     """Класс для администрирования модели изображения. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'src', 'alt'
+    list_display = "pk", "src", "alt"
 
 
 class TagAdmin(admin.ModelAdmin):
     """Класс для администрирования модели тэга. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'name'
+    list_display = "pk", "name"
 
 
 class ReviewAdmin(admin.ModelAdmin):
     """Класс для администрирования модели отзыва. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'author', 'email', 'text', 'rate', 'date', 'product'
+    list_display = "pk", "author", "email", "text", "rate", "date", "product"
 
 
 class SpecificationAdmin(admin.ModelAdmin):
     """Класс для администрирования модели характеристики. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'name', 'value'
+    list_display = "pk", "name", "value"
 
 
 class ImageInline(admin.StackedInline):
@@ -43,14 +50,14 @@ class ImageInline(admin.StackedInline):
 class SaleAdmin(admin.ModelAdmin):
     """Класс для администрирования модели скидки. Родитель: ModelAdmin."""
 
-    list_display = 'salePrice', 'dateFrom', 'dateTo'
+    list_display = "salePrice", "dateFrom", "dateTo"
 
 
 class ProductAdmin(admin.ModelAdmin):
     """Класс для администрирования модели продукта. Родитель: ModelAdmin."""
 
-    list_display = 'pk', 'title', 'category', 'price'
-    readonly_fields = 'rating',
+    list_display = "pk", "title", "category", "price"
+    readonly_fields = ("rating",)
     inlines = [ImageInline]
 
 

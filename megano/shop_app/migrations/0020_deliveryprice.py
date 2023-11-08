@@ -4,21 +4,33 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop_app', '0019_expressdeliveryprice_alter_order_options_and_more'),
+        ("shop_app", "0019_expressdeliveryprice_alter_order_options_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DeliveryPrice',
+            name="DeliveryPrice",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Стоимость')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "price",
+                    models.DecimalField(
+                        decimal_places=2, max_digits=10, verbose_name="Стоимость"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Стоимость доставки',
-                'verbose_name_plural': 'Стоимость доставки',
+                "verbose_name": "Стоимость доставки",
+                "verbose_name_plural": "Стоимость доставки",
             },
         ),
     ]

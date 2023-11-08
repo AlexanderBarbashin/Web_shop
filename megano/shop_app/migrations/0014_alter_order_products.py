@@ -4,15 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shop_app', '0013_alter_order_email'),
+        ("shop_app", "0013_alter_order_email"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='order',
-            name='products',
-            field=models.ManyToManyField(related_name='orders', to='shop_app.productsinbasketcount', verbose_name='Товары в заказе'),
+            model_name="order",
+            name="products",
+            field=models.ManyToManyField(
+                related_name="orders",
+                to="shop_app.productsinbasketcount",
+                verbose_name="Товары в заказе",
+            ),
         ),
     ]
