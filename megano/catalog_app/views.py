@@ -1,25 +1,23 @@
 from datetime import datetime
 
-from django.db.models import Count, Sum, Q, QuerySet
+from catalog_app.models import Category, Product, Review, Tag
+from catalog_app.serializers import (BannerProductListSerializer,
+                                     CategorySerializer,
+                                     ProductDetailsSerializer,
+                                     ProductListSerializer,
+                                     ProductSaleSerializer, ReviewSerializer,
+                                     TagSerializer)
+from catalog_app.utils import (ProductListFilter, ProductListViewPagination,
+                               SaleListViewPagination, request_handler)
+from django.db.models import Count, Q, QuerySet, Sum
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
+from drf_spectacular.utils import (OpenApiExample, OpenApiResponse,
+                                   extend_schema)
 from rest_framework import permissions, status
-from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-
-from catalog_app.models import Category, Tag, Product, Review
-from catalog_app.serializers import (
-    CategorySerializer,
-    TagSerializer,
-    ProductListSerializer,
-    ProductSaleSerializer,
-    ProductDetailsSerializer,
-    ReviewSerializer,
-    BannerProductListSerializer
-)
-from catalog_app.utils import ProductListViewPagination, ProductListFilter, SaleListViewPagination, request_handler
 
 
 @extend_schema(tags=['catalog'],

@@ -1,11 +1,11 @@
 import os
 
 from django.contrib.auth.models import User
-from rest_framework.test import APITestCase
 from django.urls import reverse
+from rest_framework.test import APITestCase
+from users_app.models import Profile
 
 from megano import settings
-from users_app.models import Profile
 
 
 class SignInViewTestCase(APITestCase):

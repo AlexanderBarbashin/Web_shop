@@ -1,12 +1,10 @@
+from catalog_app.models import Category, Product
 from django.db.models import Q, QuerySet
+from django_filters import BooleanFilter, CharFilter, NumberFilter
 from django_filters.rest_framework import FilterSet
-from django_filters import NumberFilter, BooleanFilter, CharFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.request import Request
-
 from rest_framework.response import Response
-
-from catalog_app.models import Category, Product
 
 
 class ProductListFilter(FilterSet):

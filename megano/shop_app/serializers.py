@@ -1,11 +1,10 @@
-from datetime import datetime
 import time
-from typing import List, Dict
-
-from rest_framework import serializers
+from datetime import datetime
+from typing import Dict, List
 
 from catalog_app.serializers import ProductListSerializer
-from shop_app.models import Product, Order
+from rest_framework import serializers
+from shop_app.models import Order, Product
 
 
 class ProductInBasketListSerializer(ProductListSerializer):

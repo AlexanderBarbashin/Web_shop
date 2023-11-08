@@ -1,11 +1,6 @@
 from django.urls import path
-
-from shop_app.views import (
-    BasketView,
-    OrderListView,
-    OrderDetailView,
-    PaymentView
-)
+from shop_app.views import (BasketView, OrderDetailView, OrderListView,
+                            PaymentView)
 
 urlpatterns = [
     path('basket', BasketView.as_view(), name='basket'),

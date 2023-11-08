@@ -1,8 +1,8 @@
 import time
 
 from celery import shared_task
-
 from shop_app.models import Order
+
 
 @shared_task
 def payment(order_pk: str, card_num: str) -> str:

@@ -1,16 +1,8 @@
+from catalog_app.views import (BannerListView, CategoryView, ProductDetailView,
+                               ProductLimitedListView, ProductListView,
+                               ProductPopularListView, ProductReviewCreate,
+                               ProductSaleListView, TagsView)
 from django.urls import path
-
-from catalog_app.views import (
-    CategoryView,
-    ProductDetailView,
-    TagsView,
-    ProductReviewCreate,
-    ProductListView,
-    ProductPopularListView,
-    ProductLimitedListView,
-    ProductSaleListView,
-    BannerListView,
-)
 
 urlpatterns = [
     path('categories', CategoryView.as_view(), name='categories'),

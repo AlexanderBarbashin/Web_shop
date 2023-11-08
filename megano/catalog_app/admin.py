@@ -1,14 +1,7 @@
+from catalog_app.models import (Category, Image, Product, Review, Sale,
+                                Specification, Tag)
 from django.contrib import admin
 
-from catalog_app.models import (
-    Category,
-    Image,
-    Tag,
-    Review,
-    Specification,
-    Product,
-    Sale
-)
 
 class CategoryAdmin(admin.ModelAdmin):
     """Класс для администрирования модели категории и подкатегории. Родитель: ModelAdmin."""

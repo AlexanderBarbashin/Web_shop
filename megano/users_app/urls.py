@@ -1,13 +1,6 @@
 from django.urls import path
-
-from users_app.views import (
-    SignOutView,
-    SignUpView,
-    SignInView,
-    ProfileView,
-    UserPasswordUpdateView,
-    UserAvatarUpdateView,
-)
+from users_app.views import (ProfileView, SignInView, SignOutView, SignUpView,
+                             UserAvatarUpdateView, UserPasswordUpdateView)
 
 urlpatterns = [
     path('sign-in', SignInView.as_view(), name='login'),

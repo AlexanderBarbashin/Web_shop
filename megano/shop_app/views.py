@@ -1,29 +1,18 @@
 from django.db import transaction
-
+from drf_spectacular.utils import (OpenApiExample, OpenApiResponse,
+                                   extend_schema)
 from rest_framework import status
-
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
-
-from shop_app.utils import get_basket, product_add_to_bakset, product_delete_from_bakset, order_users_params_get, \
-    confirm_order
-from shop_app.models import (
-    Product,
-    ProductsInBasketCount,
-    Order
-)
-from shop_app.serializers import (
-    ProductInBasketListSerializer,
-    OrderDetailSerializer,
-    OrderUpdateSerializer,
-    ProductUpdateBasketSerializer,
-    PaymentSerializer,
-    OrderCreateSerializer
-)
-
+from shop_app.models import Order, Product, ProductsInBasketCount
+from shop_app.serializers import (OrderCreateSerializer, OrderDetailSerializer,
+                                  OrderUpdateSerializer, PaymentSerializer,
+                                  ProductInBasketListSerializer,
+                                  ProductUpdateBasketSerializer)
 from shop_app.tasks import payment
+from shop_app.utils import (confirm_order, get_basket, order_users_params_get,
+                            product_add_to_bakset, product_delete_from_bakset)
 
 
 @extend_schema(tags=['basket'])

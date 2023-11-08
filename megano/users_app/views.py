@@ -1,15 +1,14 @@
 import json
 
-from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-
-from rest_framework import status, permissions, serializers
+from drf_spectacular.utils import (OpenApiParameter, OpenApiResponse,
+                                   extend_schema, inline_serializer)
+from rest_framework import permissions, serializers, status
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiParameter, inline_serializer
-
-from users_app.models import Profile, Avatar
+from users_app.models import Avatar, Profile
 from users_app.serializers import ProfileSerializer, UserPasswordSerializer
 
 

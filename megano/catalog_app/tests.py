@@ -1,13 +1,11 @@
 import json
 from datetime import datetime
 
+from catalog_app.models import Category, Image, Product, Review, Tag
 from django.contrib.auth.models import User
 from django.db.models import Count, Q, Sum
 from django.urls import reverse
-
 from rest_framework.test import APITestCase
-
-from catalog_app.models import Category, Tag, Product, Review, Image
 from users_app.models import Profile
 
 

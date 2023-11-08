@@ -1,7 +1,7 @@
-from rest_framework import serializers
-
-from catalog_app.models import Image, Category, Tag, Review, Specification, Product
+from catalog_app.models import (Category, Image, Product, Review,
+                                Specification, Tag)
 from django.template.defaulttags import url
+from rest_framework import serializers
 
 
 class ImageSerializer(serializers.ModelSerializer):

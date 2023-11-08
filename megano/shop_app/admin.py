@@ -1,12 +1,6 @@
 from django.contrib import admin
 from django.http import HttpRequest
-
-from shop_app.models import (
-    Basket,
-    Order,
-    ExpressDeliveryPrice,
-    DeliveryPrice
-)
+from shop_app.models import Basket, DeliveryPrice, ExpressDeliveryPrice, Order
 
 
 class BasketAdmin(admin.ModelAdmin):

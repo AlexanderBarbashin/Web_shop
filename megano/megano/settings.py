@@ -10,13 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import logging.config
+from os import getenv
 from pathlib import Path
 
-from os import getenv
-
 from dotenv import load_dotenv
-
-import logging.config
 
 load_dotenv()
 

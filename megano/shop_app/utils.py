@@ -1,12 +1,14 @@
 import uuid
 
+from catalog_app.models import Product
 from django.db import transaction
 from django.db.models import F, Sum
 from rest_framework.request import Request
-
-from catalog_app.models import Product
-from shop_app.models import Basket, ProductsInBasketCount, Order, DeliveryPrice, ExpressDeliveryPrice
-from shop_app.serializers import ProductUpdateBasketSerializer, ProductInBasketListSerializer, OrderUpdateSerializer
+from shop_app.models import (Basket, DeliveryPrice, ExpressDeliveryPrice,
+                             Order, ProductsInBasketCount)
+from shop_app.serializers import (OrderUpdateSerializer,
+                                  ProductInBasketListSerializer,
+                                  ProductUpdateBasketSerializer)
 
 
 def get_basket(request: Request) -> Basket:

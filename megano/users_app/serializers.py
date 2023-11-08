@@ -1,7 +1,6 @@
 from django.db.migrations import serializer
 from django.template.defaulttags import url
 from rest_framework import serializers
-
 from users_app.models import Avatar, Profile
 
 

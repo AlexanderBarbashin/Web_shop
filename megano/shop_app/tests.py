@@ -1,15 +1,15 @@
 import json
 import os
 
+from catalog_app.models import Category, Image, Product
 from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework.test import APITestCase
+from shop_app.models import Basket, DeliveryPrice, Order, ProductsInBasketCount
+from users_app.models import Profile
 
-from catalog_app.models import Product, Category, Image
 from megano import settings
 from megano.celery import app
-from shop_app.models import Basket, ProductsInBasketCount, Order, DeliveryPrice
-from users_app.models import Profile
 
 
 class BasketViewTestCase(APITestCase):
