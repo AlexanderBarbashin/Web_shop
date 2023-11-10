@@ -20,8 +20,6 @@ load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-DATABASE_DIR = BASE_DIR / "database"
-DATABASE_DIR.mkdir(exist_ok=True)
 
 
 # Quick-start development settings - unsuitable for production
@@ -97,10 +95,19 @@ WSGI_APPLICATION = "megano.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": DATABASE_DIR / "db.sqlite3",
+#     }
+# }
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": DATABASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": getenv("DB_HOST"),
+        "NAME": getenv("DB_NAME"),
+        "USER": getenv("DB_USER"),
+        "PASSWORD": getenv("DB_PASSWORD"),
     }
 }
 
@@ -174,36 +181,6 @@ APPEND_SLASH = False
 LOGFILE_NAME = BASE_DIR / "log.txt"
 LOGFILE_SIZE = 1 * 1024 * 1024
 LOGFILE_COUNT = 5
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '%(asctime)s level: %(levelname)s, module: %(name)s: %(message)s'
-#         }
-#     },
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose'
-#         },
-#         'logfile': {
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': LOGFILE_NAME,
-#             'maxBytes': LOGFILE_SIZE,
-#             'backupCount': LOGFILE_COUNT,
-#             'formatter': 'verbose'
-#         }
-#     },
-#     'root': {
-#         'handlers': [
-#             'console',
-#             'logfile'
-#         ],
-#         'level': 'INFO'
-#     }
-# }
 
 LOGLEVEL = getenv("DJANGO_LOGLEVEL", "info").upper()
 
