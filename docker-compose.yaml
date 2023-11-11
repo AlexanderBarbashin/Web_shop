@@ -26,6 +26,7 @@ services:
       - DB_HOST=database
     depends_on:
       - database
+      - redis
 
   database:
     image: postgres:16-alpine
@@ -35,8 +36,6 @@ services:
       - POSTGRES_PASSWORD=pass
     volumes:
       - F:/Downloads/DB:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   nginx:
     build: ./nginx
@@ -56,19 +55,10 @@ services:
     build:
       dockerfile: ./Dockerfile
     depends_on:
-      - database
       - redis
-      - django-app
-    restart: always
-    env_file:
-      - .env
-    environment:
-      - DB_HOST=database
     hostname: worker
     entrypoint: celery
     command: -A celery --app=megano worker --loglevel=warning
-    volumes:
-      - F:/Downloads/DB:/var/lib/postgresql/data
     links:
       - redis
 

@@ -66,23 +66,29 @@ class CategoryView(ListAPIView):
         .filter(Q(prods_count__gt=0) | Q(subcats_count__gt=0))
     )
 
-    # Исключаем главные категории, которые не содержат ни одного продукта и ни одной активной подкатегории
-    # (подкатегории, содержащей хотя бы один продукт)
-    for category in main_categories:
-        subcategories_products_sum = (
-            category.subcategories.all()
-            .prefetch_related("products")
-            .annotate(subcats_prods_count=Count("products"))
-            .aggregate(subcats_prods_sum=Sum("subcats_prods_count"))
-        )
-        if (
-            category.prods_count == 0
-            and subcategories_products_sum["subcats_prods_sum"] == 0
-        ):
-            main_categories = main_categories.exclude(id=category.id)
-
     queryset = main_categories
     serializer_class = CategorySerializer
+
+    def get_queryset(self) -> QuerySet:
+        """
+        Метод для исключения из Queryset главных категорий, которые не содержат ни одного продукта и ни одной активной
+        подкатегории (подкатегории, содержащей хотя бы один продукт)
+        """
+
+        queryset = super().get_queryset()
+        for category in queryset:
+            subcategories_products_sum = (
+                category.subcategories.all()
+                .prefetch_related("products")
+                .annotate(subcats_prods_count=Count("products"))
+                .aggregate(subcats_prods_sum=Sum("subcats_prods_count"))
+            )
+            if (
+                category.prods_count == 0
+                and subcategories_products_sum["subcats_prods_sum"] == 0
+            ):
+                queryset = queryset.exclude(id=category.id)
+        return queryset
 
 
 @extend_schema(tags=["tags"])
