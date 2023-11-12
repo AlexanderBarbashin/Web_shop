@@ -39,7 +39,7 @@ var mix = {
 			const password = document.querySelector('#password').value
 			this.postData('/api/sign-in', JSON.stringify({ username, password }))
 				.then(({ data, status }) => {
-					location.assign(`/orders/${this.orderId}`)
+					location.assign(`/orders/${this.orderId}/`)
 				})
 				.catch(() => {
 					alert('Ошибка авторизации')

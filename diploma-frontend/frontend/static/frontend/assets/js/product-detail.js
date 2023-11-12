@@ -27,13 +27,13 @@ var mix = {
             })
         },
         submitReview () {
-            this.postData(`/api/product/${this.product.id}/review/`, {
+            this.postData(`/api/product/${this.product.id}/reviews`, {
                 author: this.review.author,
                 email: this.review.email,
                 text: this.review.text,
                 rate: this.review.rate
             }).then(({data}) => {
-                this.product.review = data
+                this.product.reviews = data
                 alert('Отзыв опубликован')
                 this.review.author = ''
                 this.review.email = ''

@@ -1,7 +1,7 @@
 var mix = {
     methods: {
         getSales(page = 1) {
-            this.getData("/api/sale/", {
+            this.getData("/api/sales", {
                 currentPage: page,
             }).then(data => {
                 this.salesCards = data.items

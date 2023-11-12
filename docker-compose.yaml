@@ -1,0 +1,74 @@
+version: '3.9'
+
+services:
+  django-app:
+    build:
+      dockerfile: ./Dockerfile
+    command:
+      - gunicorn
+      - megano.wsgi:application
+      - --bind
+      - 0.0.0.0:8000
+    ports:
+      - '8000:8000'
+    restart: always
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '5'
+        max-size: '1m'
+    env_file:
+      - .env
+    volumes:
+      - static_volume:/django-app/static
+      - media_volume:/django-app/media
+    environment:
+      - DB_HOST=database
+    depends_on:
+      - database
+      - redis
+
+  database:
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    volumes:
+      - F:/Downloads/DB:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  nginx:
+    build: ./nginx
+    ports:
+      - '80:80'
+    volumes:
+      - static_volume:/django-app/static
+      - media_volume:/django-app/media
+    depends_on:
+      - django-app
+
+  redis:
+    image: redis:7.0.5-alpine
+    hostname: redis
+
+  worker:
+    build:
+      dockerfile: ./Dockerfile
+    depends_on:
+      - redis
+      - database
+    hostname: worker
+    entrypoint: celery
+    command: -A celery --app=megano worker --loglevel=warning
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=database
+    links:
+      - redis
+
+volumes:
+  static_volume:
+  media_volume:
+
+

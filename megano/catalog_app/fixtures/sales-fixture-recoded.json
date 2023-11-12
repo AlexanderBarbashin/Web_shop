@@ -1,0 +1,1 @@
+[{"model": "catalog_app.sale", "pk": 1, "fields": {"salePrice": "50.00", "dateFrom": "2023-10-14", "dateTo": "2023-11-30"}}]
