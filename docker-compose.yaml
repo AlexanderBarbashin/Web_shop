@@ -30,12 +30,12 @@ services:
 
   database:
     image: postgres:16-alpine
-    environment:
-      - POSTGRES_DB=dbname
-      - POSTGRES_USER=dbuser
-      - POSTGRES_PASSWORD=pass
+    env_file:
+      - .env
     volumes:
       - F:/Downloads/DB:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   nginx:
     build: ./nginx
@@ -56,9 +56,14 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - redis
+      - database
     hostname: worker
     entrypoint: celery
     command: -A celery --app=megano worker --loglevel=warning
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=database
     links:
       - redis
 
