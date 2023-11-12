@@ -71,7 +71,7 @@ class Order(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     fullName = models.CharField(max_length=150, verbose_name="Полное имя")
     email = models.EmailField(verbose_name="Электронный адрес")
-    phone = models.PositiveIntegerField(null=True, verbose_name="Номер телефона")
+    phone = models.CharField(null=True, verbose_name="Номер телефона")
     deliveryType = models.CharField(max_length=20, verbose_name="Тип доставки")
     paymentType = models.CharField(max_length=20, verbose_name="Тип оплаты")
     totalCost = models.DecimalField(
